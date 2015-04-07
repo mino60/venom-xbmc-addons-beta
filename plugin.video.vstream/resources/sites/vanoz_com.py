@@ -81,7 +81,6 @@ def showSearch():
             oGui.setEndOfDirectory()
             return  
     
-    
 def showGenre(): #affiche les genres
     oGui = cGui()
  
