@@ -93,8 +93,8 @@ def showGenre(): #affiche les genres
     liste.append( ['COMEDIE','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=4:aventure-&Itemid=14&layout=default'] )
     liste.append( ['DOCUMENTAIRES','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=26&Itemid=4'] )
     liste.append( ['DRAME','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=7:drame-&Itemid=16&layout=default'] )
-    liste.append( ['FANTASTIQUE','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=8:fantastique-&Itemid=17&layout=default'] )     
-    liste.append( ['HORREUR','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=9:horreur-&Itemid=18&layout=default'] ) 
+    liste.append( ['FANTASTIQUE','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=8:fantastique-&Itemid=17&layout=default'] )    
+    liste.append( ['HORREUR','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=9:horreur-&Itemid=18&layout=default'] )
     liste.append( ['POLICIER','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=10:policier-&Itemid=19&layout=default'] )
     liste.append( ['SCIENCE FICTION','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=11:science-fiction-&Itemid=20&layout=default'] )
     liste.append( ['SPECTACLE','http://www.fadoz.com/rva/index.php?option=com_content&view=category&id=3&Itemid=5'] )    
@@ -117,7 +117,7 @@ def showMovies(sSearch = ''):
     else :
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+       
         if (sUrl == 'http://www.fadoz.com/rva/') :
             sPattern = '<b><a style="font-size: 14px;" href="(.+?)" class="latestnews">(\t|\n)+(.+?)<.a><.b>'
         else:
@@ -284,4 +284,3 @@ def showHostersLink():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
            
         oGui.setEndOfDirectory()
-        
