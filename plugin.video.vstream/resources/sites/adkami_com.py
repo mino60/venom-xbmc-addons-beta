@@ -75,7 +75,6 @@ def load():
             
     oGui.setEndOfDirectory()
 
-  
 def showSearch():
     oGui = cGui()
 
