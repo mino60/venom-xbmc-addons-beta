@@ -23,6 +23,7 @@ SITE_DESC = 'Film en streaming'
 
 URL_MAIN = 'http://www.archive.org' # url de votre source
 URL_FILMS = 'https://ia601408.us.archive.org/30/items/urllist_201412/fadoz.txt'
+URL_CINEMA = 'https://ia601408.us.archive.org/30/items/urllist_201412/cinema.txt' 
 MOVIE_GENRES = (True, 'showGenre')
 
 cover = 'film.jpg'       
@@ -42,6 +43,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_FILMS)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Films', 'film.jpg', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_CINEMA)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Cinema', 'film.jpg', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
