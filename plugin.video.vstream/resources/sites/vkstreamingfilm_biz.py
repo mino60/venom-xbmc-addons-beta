@@ -100,7 +100,7 @@ def showGenre():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
-        #on redecode la recherhce codé il y a meme pas une seconde par l'addon
+        #on redecode la recherhce codÃ© il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
        
         query_args = { 'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
@@ -169,7 +169,7 @@ def showMovies(sSearch=''):
  
 def __checkForNextPage(sHtmlContent):
    
-    sPattern = '<div class="navigation">(?:<a href="http:[^<>]+?">[0-9]+<\/a> )*<span>[0-9]+<\/span> <a href="(.+?)">'
+    sPattern = '<div class="nextprev">.+?<a href="([^<>]+?)"><span class="pnext">Suivant<\/span><\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
@@ -192,7 +192,7 @@ def showHosters():
    
     #Recuperation qualitee
     qualite = ''
-    sPattern = '<b>QualitÃ© :<\/b><\/span> +?<p class="text">([^<>()|]+)(?:\(.+?\))*[ |]*.+?<\/p>'
+    sPattern = '<b>QualitÃƒÂ© :<\/b><\/span> +?<p class="text">([^<>()|]+)(?:\(.+?\))*[ |]*.+?<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         qualite = ' [' + aResult[1][0] + ']'
@@ -207,7 +207,7 @@ def showHosters():
     if aResult[0]:
         langue = aResult[1]
  
-    sPattern = '<div class="fstory-video-block" id="(.+?)">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
+    sPattern = '<div class="fstory-video-block" id="(video.*?)">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     sMovieTitle = sMovieTitle + qualite
