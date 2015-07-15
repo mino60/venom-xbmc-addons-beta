@@ -11,6 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib2,urllib
+
  
 SITE_IDENTIFIER = 'full_streamvk_com'
 SITE_NAME = 'Full-streamvk.com'
@@ -108,13 +109,14 @@ def showMovies(sSearch=''):
             print e.reason
      
         sHtmlContent = reponse.read()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)" class="img-poster border-2 shadow-dark7" width="151" height="215".*?<a href="(.+?)" title'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)" class="img-poster border-2 shadow-dark7" width="151" height="215" />.+?<a href="(http://www.full-streamvk.*?)" title'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(.*?)" title'
+        #sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(.*?)" title'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(http://www.full-streamvk.*?)" title'
        
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
     oParser = cParser()
@@ -142,10 +144,10 @@ def showMovies(sSearch=''):
  
  
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], aEntry[2], sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -155,11 +157,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
- 
+
+             
     if not sSearch:
-        oGui.setEndOfDirectory()
- 
- 
+        oGui.setEndOfDirectory() 
+                
 def __checkForNextPage(sHtmlContent):
    
     sPattern = '<div class="nextprev">.+?<a href="([^<>]+?)"><span class="pnext">Suivant<\/span><\/a>'
@@ -169,24 +171,25 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         return aResult[1][0]
  
-    return False
- 
- 
+    return False 
+        
+    
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-   
-    print sUrl
-   
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+ 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sPattern = '<div class="fstory-video-block" id="(.+?)">.+?<iframe.+?src=(.+?)'
+    sHtmlContent = sHtmlContent.replace('src="http://full-streamvk.com/','')
+ 
+ 
+    sPattern = '<div class="fstory-video-block" id="(.+?)">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-   
     #print aResult
+    aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -195,14 +198,13 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
- 
+           
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-       
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')        
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
    
         cConfig().finishDialog(dialog)
  
