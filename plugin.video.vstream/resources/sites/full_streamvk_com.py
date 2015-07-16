@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib2,urllib
-import urlresolver
+
  
 SITE_IDENTIFIER = 'full_streamvk_com'
 SITE_NAME = 'Full-streamvk.com'
