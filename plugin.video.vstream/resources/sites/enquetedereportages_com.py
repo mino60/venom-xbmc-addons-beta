@@ -19,7 +19,7 @@ SITE_DESC = 'replay tv'
  
 URL_MAIN = 'http://enquetedereportages.com/'
 
-
+DOC_DOCS =('http://enquetedereportages.com/category/documentaire/', 'showMovies')
 REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
  
 REPLAYTV_GENRES = (True, 'showGenre')
@@ -91,8 +91,8 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    #sPattern = '<a href="([^<]+)" title="([^<]+)" >.+?<img width=".+?" height=".+?" src="(.+?)"'
-    sPattern = '<a href="([^<>"]+?)" title="([^"]+?)"><img [^<>]+?src="([^<>"]+?)" class="attachment-featured wp-post-image"'
+    #sPattern = '<a href="([^<>"]+?)" title="([^"]+?)"><img [^<>]+?src="([^<>"]+?)" class="attachment-featured wp-post-image"'
+    sPattern = '<h1 class="genpost-entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a></h1><div class="genpost-entry-meta"> '
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -117,11 +117,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
 			 
            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[0], oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[1], oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -159,7 +158,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
  
-    sPattern = '<iframe src="(.+?)"[^<>]*><\/iframe>'
+    sPattern = '<p><iframe src="(.+?)" width="540" height="290" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen"></iframe></p'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 			
