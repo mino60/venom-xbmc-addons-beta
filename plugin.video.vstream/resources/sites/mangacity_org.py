@@ -35,10 +35,6 @@ def DecryptMangacity(chain):
         
     return d
     
-def DecoTitle(string):
-    string = re.sub('(.*)([\[\(].{1,7}[\)\]])','\\1[COLOR coral]\\2[/COLOR]', str(string))
-    return string
-
 #------------------------------------------------------------------------------------    
     
 SITE_IDENTIFIER = 'mangacity_org'
@@ -272,9 +268,10 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             
-            sTitle = DecoTitle(sTitle)
             sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.replace('[Streaming] - ','')
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             sPicture = aEntry[0]
             #sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
@@ -286,7 +283,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
         
@@ -356,10 +353,16 @@ def showEpisode():
             if dialog.iscanceled():
                 break
                 
-        
-            sTitle = cUtil().unescape(aEntry[2])
-            sTitle = DecoTitle(sTitle)
+            sTitle = unicode(aEntry[2],'iso-8859-1')
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
+            sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            
+            sTitle = cUtil().unescape(sTitle)
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             sUrl2 = str(cUtil().unescape(aEntry[1]))
+            
             if URL_MAIN not in sUrl2:
                 sUrl2 = URL_MAIN + sUrl2
             
@@ -373,7 +376,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
 
@@ -461,7 +464,8 @@ def showHosters():
             #print sHosterUrl
             
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
