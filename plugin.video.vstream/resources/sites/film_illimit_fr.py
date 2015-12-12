@@ -112,8 +112,7 @@ def showAlpha():
         if sTitle == '@':
             sTitle= '[0-9]'
             sUrl = 'http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/0-9/'
-
-            
+          
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -126,6 +125,7 @@ def showAlpha():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
+      sSearch = sSearch.replace(' ','+')
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
