@@ -172,7 +172,9 @@ class cAbout:
                 if (service_md5 != sHtmlContent):
                     if (download == 'true'):
                         self.__checkdownload()
-                    cConfig().setSetting('home_update', str('true'))
+                        cConfig().setSetting('home_update', str('false'))
+                    else:
+                        cConfig().setSetting('home_update', str('true'))
                 else:
                     if (download == 'true'):
                         cConfig().showInfo('vStream', 'Fichier a jour')
