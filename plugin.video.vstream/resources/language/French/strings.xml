@@ -8,7 +8,7 @@
 
     <!-- settingtabs begin by 30021 - 30030 -->
     <string id="30021">Général</string>
-    <string id="30022">Plugins on/off</string>
+    <string id="30022">Plugins on/off (1/2)</string>
     <string id="30023">Plugins Préférences</string>
     <string id="30024">Hote</string>
     <string id="30025">Accueil</string>
@@ -17,15 +17,15 @@
     <string id="30028">Paramètre à modifier dans l'addon PVR</string>
 
     <string id="30076">Recherche</string>
-    <string id="30077">Recherche 1</string>
+    <string id="30077">          Recherche 1</string>
     <string id="30078">Recherche personnalisée 1</string>
     <string id="30079">Recherche personnalisée 2</string>
     <string id="30080">Recherche personnalisée 3</string>
     <string id="30081">Recherche personnalisée 4</string>
     <string id="30088">Recherche visuelle</string>
-    <string id="30089">Recherche 2</string>
-    <string id="30090">Recherche 3</string>
-    <string id="30091">Recherche 4</string>
+    <string id="30089">          Recherche 2</string>
+    <string id="30090">          Recherche 3</string>
+    <string id="30091">          Recherche 4</string>
 
 
     <!-- Pluginnames begin by 30201 - 30299 -->
@@ -82,6 +82,9 @@
 	<string id="30140">Animés Sources</string>
 	
 	<string id="30145">Dossier de Téléchagements</string>
+	
+	<string id="30146">     Afficher/Masquer les paramètres de recherche</string>
+	<string id="30147">Plugins on/off (2/2)</string>
 
 </strings>
 
