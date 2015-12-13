@@ -159,22 +159,24 @@ class cAbout:
                 
     def __checkupdate(self, download):
             service_time = cConfig().getSetting('service_time')
-            service_md5 = cConfig().getSetting('service_md5')         
+            service_md5 = cConfig().getSetting('service_md5')
+
             try:
                 #sUrl = 'https://api.github.com/repos/LordVenom/venom-xbmc-addons/commits/master'
                 sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/updates.xml.md5'
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request();
+                
                 if not service_md5:
                     cConfig().setSetting('service_md5', sHtmlContent)
                     service_md5 = sHtmlContent
                 
                 if (service_md5 != sHtmlContent):
+                    cConfig().setSetting('home_update', str('true'))
+                    
                     if (download == 'true'):
-                        self.__checkdownload()
-                        cConfig().setSetting('home_update', str('false'))
-                    else:
-                        cConfig().setSetting('home_update', str('true'))
+                        self.__checkdownload(sHtmlContent)
+                    
                 else:
                     if (download == 'true'):
                         cConfig().showInfo('vStream', 'Fichier a jour')
@@ -184,7 +186,7 @@ class cAbout:
                 return
             return
     
-    def __checkdownload(self):
+    def __checkdownload(self, service_md5):
             aPlugins = self.getPlugins()
             total = len(aPlugins)
             dialog = cConfig().createDialog('Update')
@@ -210,6 +212,8 @@ class cAbout:
             sContent += "Fichier mise à jour %s / %s" %  (sdown, total)
             #self.TextBoxes('vStream mise à Jour', sContent)
             cConfig().setSetting('service_time', str(datetime.datetime.now()))
+            cConfig().setSetting('service_md5', service_md5)
+            cConfig().setSetting('home_update', str('false'))
             cConfig().createDialogOK(sContent)
             return
             
