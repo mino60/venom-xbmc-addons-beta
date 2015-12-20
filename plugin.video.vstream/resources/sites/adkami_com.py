@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.lib.util import cUtil
-import string,re
+import re
 
 
 #Ce site a des probleme en http/1.1 >> incomplete read error
