@@ -1,8 +1,10 @@
+#-*- coding: utf-8 -*-
 import re
 import urllib
 import xbmc
 import xbmcgui
 import htmlentitydefs
+import unicodedata
 
 class cUtil:
 
@@ -48,24 +50,9 @@ class cUtil:
         
         #pr les tag
         string = re.sub('([\[\(](?![0-9]{4}).{1,7}[\)\]])',' [COLOR coral]\\1[/COLOR] ', str(string))
-        #pr les episodes
-        SXEX = ''
-        m = re.search('(?i)(.pisode ([0-9]+))', string)
-        if m:
-            string = string.replace(m.group(1),'')
-            SXEX = 'E' + "%02d" % int(m.group(2))
-            
-            #pr les saisons
-            m = re.search('(?i)(saison ([0-9]+))', string)
-            if m:
-                string = string.replace(m.group(1),'')
-                SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
-            
-            #string = re.sub(' +',' ',string)
-            string = string + ' [COLOR coral] ' + SXEX + '[/COLOR] '
-        
-        else:
-            string = re.sub('(?i)(.*)(saison [0-9]+)','\\1 [COLOR coral]\\2[/COLOR] ', str(string))
+        #pr les series
+        string = self.FormatSerie(string)
+        string = re.sub('(?i)(.*) ((?:[S|E][0-9]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', str(string))
             
         #vire doubles espaces
         string = re.sub(' +',' ',string)
@@ -94,3 +81,64 @@ class cUtil:
         return re.sub("&#?\w+;", fixup, text)
             
             
+    def CleanName(self,str):
+        #vire accent et '\'
+        try:
+            str = unicode(str, 'utf-8')#converti en unicode pour aider aux convertions
+        except:
+            pass
+        str = unicodedata.normalize('NFD', str).encode('ascii', 'ignore').decode("unicode_escape")
+        str = str.encode("utf-8") #on repasse en utf-8
+        
+        #on cherche l'annee
+        annee = ''
+        m = re.search('(\([0-9]{4}\))', str)
+        if m:
+            annee = m.group(0)
+       
+        #vire tag
+        str = re.sub('[\(\[].+?[\)\]]','', str)
+        #vire caractere special
+        str = re.sub("[^a-zA-Z0-9 ]", "",str)
+        #tout en minuscule
+        str = str.lower()
+        #vire espace double
+        str = re.sub(' +',' ',str)
+     
+        #vire espace a la fin
+        if str.endswith(' '):
+            str = str[:-1]
+           
+        #on remet l'annee
+        if annee:
+            str = str + ' ' + annee
+           
+        return str
+        
+    def FormatSerie(self,string):
+        SXEX = ''
+        m = re.search('(?i)(.pisode ([0-9]+))', string)
+        if m:
+            #ok y a des episodes
+            string = string.replace(m.group(1),'')
+            SXEX = 'E' + "%02d" % int(m.group(2))
+            
+            #pr les saisons
+            m = re.search('(?i)(saison ([0-9]+))', string)
+            if m:
+                string = string.replace(m.group(1),'')
+                SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
+            
+            string = string + ' ' + SXEX
+        
+        else:
+            #pas d'episode mais y a t il des saisons ?
+            m = re.search('(?i)(saison ([0-9]+))', string)
+            if m:
+                string = string.replace(m.group(1),'')
+                SXEX = 'S' + "%02d" % int(m.group(2))
+            
+                string = string + ' ' + SXEX
+            
+        return string
+ 
