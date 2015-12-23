@@ -424,7 +424,7 @@ def showHosters():
             else:#adresse cryptee
                 sHosterUrl = DecryptMangacity(aEntry[2])
                 sHosterUrl = sHosterUrl.replace('\\','')
-                print 'Decrypte :' + sHosterUrl
+                #print 'Decrypte :' + sHosterUrl
                 
                 #Dans le cas ou l'adresse n'est pas directe
                 if not (sHosterUrl[:4] == 'http'):
