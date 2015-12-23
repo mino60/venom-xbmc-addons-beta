@@ -41,14 +41,14 @@ SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'MangaCity.org'
 SITE_DESC = 'Anime en streaming'
 
-URL_MAIN = 'http://www.mangacity.org/'
+URL_MAIN = 'http://www.mangacity.co/'
 
-ANIM_ANIMS = ('http://www.mangacity.org/animes.php?liste=SHOWALPHA', 'ShowAlpha')
+ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenre')
-ANIM_NEWS = ('http://www.mangacity.org/nouveautees.php', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'nouveautees.php', 'showMovies')
 
-ANIM_VFS = ('http://www.mangacity.org/listing_vf.php', 'ShowAlpha2')
-ANIM_VOSTFRS = ('http://www.mangacity.org/listing_vostfr.php', 'ShowAlpha2')
+ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
+ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -98,7 +98,7 @@ def showGenre(): #affiche les genres
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    sUrl = URL_MAIN + 'animes.php?liste=SHOWALPHA'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -144,7 +144,7 @@ def ShowAlpha2():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    sUrl2 = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    sUrl2 = URL_MAIN + 'animes.php?liste=SHOWALPHA'
     
     sType = 'VF'
     if 'vostfr' in sUrl:
@@ -209,15 +209,15 @@ def showMovies(sSearch = ''):
         #query_args = { 's': str(sSearch) }
         #data = urllib.urlencode(query_args)
         #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'http://www.mangacity.org'}
-        #url = 'http://www.mangacity.org/result.php'
+        #url = URL_MAIN + 'result.php'
         #request = urllib2.Request(url,data,headers)
         #reponse = urllib2.urlopen(request)
         
         sSearch = urllib2.unquote(sSearch)
-        sSearch = urllib.quote_plus(sSearch)
+        sSearch = urllib.quote_plus(sSearch).upper()
 
-        url = 'http://www.mangacity.org/resultat.php?string=' + sSearch
-        headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'http://www.mangacity.org'}
+        url = URL_MAIN + 'resultat.php?string=' + sSearch
+        headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : URL_MAIN}
         request = urllib2.Request(url,None,headers)
         reponse = urllib2.urlopen(request)
         
@@ -283,7 +283,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            if '?manga=' in aEntry[2]:
+                oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
         
@@ -402,7 +405,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print aResult
+    print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -421,7 +424,7 @@ def showHosters():
             else:#adresse cryptee
                 sHosterUrl = DecryptMangacity(aEntry[2])
                 sHosterUrl = sHosterUrl.replace('\\','')
-                #print 'Decrypte :' + sHosterUrl
+                print 'Decrypte :' + sHosterUrl
                 
                 #Dans le cas ou l'adresse n'est pas directe
                 if not (sHosterUrl[:4] == 'http'):
@@ -443,6 +446,10 @@ def showHosters():
                         final = aResult[1][0]
                         if not final.startswith( 'http' ):
                             final = URL_MAIN + final
+                            
+                    #nouveau codage
+                    if ';&#' in final:
+                        final = cUtil().unescape(final)
                         
                     sHosterUrl = final
             
