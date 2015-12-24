@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
 
 import os,unicodedata,re,sys
-import urllib
+import urllib,re
 import xbmc,xbmcgui
 
 SITE_IDENTIFIER = 'cLibrary'
@@ -60,7 +60,7 @@ class cLibrary:
         
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
         
-        sTitle = sFileName
+        sTitle = sFileName        
         #sTitle = xbmc.getInfoLabel('ListItem.title')
         #meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         #meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
@@ -85,17 +85,18 @@ class cLibrary:
         elif sCat == '2':
             folder = self.__sTVFolder
             
-            sTitleComplet = cUtil().FormatSerie(sTitle)
-            sTitle = cUtil().CleanName(sTitleComplet)
-            
+            sTitle = cUtil().FormatSerie(sTitle)
+            sTitle = cUtil().CleanName(sTitle)
+            sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
+
             try:
                 print folder
-                folder2 = folder + '/' + sTitle
+                folder2 = folder + '/' + sTitleGlobal + '/'
                 
                 if not os.path.exists(folder2):
                     os.mkdir(folder2)
                 
-                self.MakeFile(folder2,sTitleComplet,sLink)
+                self.MakeFile(folder2,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
                 xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
