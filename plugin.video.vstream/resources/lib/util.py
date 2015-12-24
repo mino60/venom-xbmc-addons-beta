@@ -108,6 +108,9 @@ class cUtil:
         #vire espace a la fin
         if str.endswith(' '):
             str = str[:-1]
+            
+        #vire tag series
+        str = re.sub('(?i)(saison ([0-9]+))', '',str)
            
         #on remet l'annee
         if annee:
