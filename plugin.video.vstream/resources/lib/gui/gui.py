@@ -10,11 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.epg import cePg
 from resources.lib.parser import cParser
-import xbmc
+
+import xbmc,sys
 import xbmcgui
 import xbmcplugin
 import urllib
 import unicodedata,re
+import xbmc
 
 def CleanName(str):
     
@@ -104,7 +106,6 @@ class cGui():
         oGuiElement.setDescription(sDesc)
         
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -238,8 +239,7 @@ class cGui():
         
         self.createContexMenuEpg(oGuiElement, oOutputParameterHandler)
         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-        
-        
+
         self.addFolder(oGuiElement, oOutputParameterHandler)          
 
     
@@ -263,6 +263,7 @@ class cGui():
             self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+
         elif cGui.CONTENT == "tvshows":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
@@ -289,7 +290,7 @@ class cGui():
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
             oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
-        
+
         return oListItem
 
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
@@ -344,6 +345,21 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)
+        
+    def createContexMenuLibrary(self, oGuiElement, oOutputParameterHandler= ''):
+        oContext = cContextElement()     
+        oContext.setFile('cLibrary')
+        oContext.setSiteName('cLibrary')
+        oContext.setFunction('setLibrary')
+        oContext.setTitle('[COLOR teal]Ajouter a la librairie[/COLOR]')
+        
+        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
+        
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
         oGuiElement.addContextItem(oContext)
@@ -625,7 +641,9 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
     
     def setWatched(self):
-        oInputParameterHandler = cInputParameterHandler()        
+
+        oInputParameterHandler = cInputParameterHandler()
+       
         #aParams = oInputParameterHandler.getAllParameter()
         #print aParams
         
