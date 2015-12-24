@@ -18,15 +18,15 @@
     <string id="30029">Enable error popup</string>
 
     <string id="30076">Search</string>
-    <string id="30077">          Search 1</string>
+    <string id="30077">Search 1</string>
     <string id="30078">Custom search 1</string>
     <string id="30079">Custom search 2</string>
     <string id="30080">Custom search 3</string>
     <string id="30081">Custom search 4</string>
     <string id="30088">Visual Search</string>
-    <string id="30089">          Search 2</string>
-    <string id="30090">          Search 3</string>
-    <string id="30091">          Search 4</string>
+    <string id="30089">Search 2</string>
+    <string id="30090">Search 3</string>
+    <string id="30091">Search 4</string>
 
 
     <!-- Pluginnames begin by 30201 - 30299 -->
@@ -83,7 +83,12 @@
     <string id="30140">Animés Sources</string>
     
     <string id="30145">Download folder</string>
-	<string id="30146">     Show / Hide search settings</string>
-	<string id="30147">Plugins on/off (2/2)</string>
+    <string id="30146">Show / Hide search settings</string>
+    <string id="30147">Plugins on/off (2/2)</string>
+    
+    <!--Librairie -->
+    <string id="30300">Library</string>
+    <string id="30301">A configurer dans kodi si vous voulez qu'ils soient importes</string>
+    <string id="30302">Auto updatet</string>
         
 </strings>
