@@ -5,6 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
+from resources.lib.gui.guiElement import cGuiElement
 
 import os,unicodedata,re,sys
 import urllib,re
@@ -88,6 +89,8 @@ class cLibrary:
             sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
             sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
+            if sTitleGlobal.endswith(' '):
+                sTitleGlobal = sTitleGlobal[:-1]
 
             try:
                 print folder
@@ -108,4 +111,65 @@ class cLibrary:
         f = open(stream, 'w')
         f.write(str(content))
         f.close()
+        
+        
+    def getLibrary(self):
+        
+        oGui = cGui()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('folder', self.__sMovieFolder)
+        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Films', 'download.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('folder', self.__sTVFolder)
+        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Series', 'download.png', oOutputParameterHandler)
+          
+        oGui.setEndOfDirectory()
+        
+    def Delfile(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFile = oInputParameterHandler.getValue('sFile')
+        
+        os.remove(sFile)
+        
+        runClean = xbmcgui.Dialog().yesno("Fichier supprime","Voulez vous mettre a jour la librairie maintenant (non conseille)")
+        if(not runClean):
+            return
+            
+        xbmc.executebuiltin("CleanLibrary(video)")
+        
+    
+    def ShowContent(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFolder = oInputParameterHandler.getValue('folder')
+        
+        oGui = cGui()
+
+        files = os.listdir(sFolder)
+        for file in files:
+            if os.path.isdir(sFolder + file):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('folder', sFolder + file + '/')
+                oGui.addDir(SITE_IDENTIFIER, 'ShowContent', file, 'download.png', oOutputParameterHandler)
+            elif '.strm' in file:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('sFile', sFolder + file)
+                
+                sTitle = file.split('.')[0]
+            
+                oGuiElement = cGuiElement()
+                oGuiElement.setFunction('')
+                oGuiElement.setTitle(sTitle)
+                #oGuiElement.setIcon('download.png')
+                #oGuiElement.setFanart(cConfig().getRootArt()+'download_fanart.jpg')
+                oGuiElement.setMeta(0)
+                #oGuiElement.setThumbnail(thumbnail)
+                
+                #menu contextuel
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichiert')
+                
+                oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+          
+        oGui.setEndOfDirectory()       
         
