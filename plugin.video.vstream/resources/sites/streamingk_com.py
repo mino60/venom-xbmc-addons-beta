@@ -167,7 +167,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if 'sa-filmographie-streaming' in aEntry[1]:
+            if '-filmographie-streaming' in aEntry[1]:
                 pass
             elif 'series' in sUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
