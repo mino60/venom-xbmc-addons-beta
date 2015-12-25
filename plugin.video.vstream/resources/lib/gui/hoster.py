@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.handler.jdownloaderHandler import cJDownloaderHandler
-#import resources.lib.download import cDownload
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -82,7 +81,9 @@ class cHosterGui:
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
-
+        #context Library menu
+        oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','setLibrary','[COLOR teal]Ajouter a la librairie[/COLOR]')
+      
         #bug
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
          
