@@ -35,7 +35,7 @@ ANIM_NEWS = (URL_MAIN + 'mangas/','showMovies')
 ANIM_VFS = (URL_MAIN + 'mangas/mangas-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'mangas/mangas-vostfr/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -105,7 +105,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story='+sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
