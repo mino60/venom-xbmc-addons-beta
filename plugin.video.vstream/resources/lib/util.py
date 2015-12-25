@@ -7,6 +7,15 @@ import htmlentitydefs
 import unicodedata
 
 class cUtil:
+    
+    def CheckOccurence(self,str1,str2):
+        str1 = str1.replace('+',' ').lower()
+        str2 = str2.lower()
+        i = 0
+        for part in str1.split(' '):
+            if part in str2:
+                i = i + 1
+        return i
 
     def removeHtmlTags(self, sValue, sReplace = ''):
         p = re.compile(r'<.*?>')
