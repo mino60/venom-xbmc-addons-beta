@@ -57,8 +57,10 @@ class cUtil:
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',string)
         
-        #pr les tag
-        string = re.sub('([\[\(](?![0-9]{4}).{1,7}[\)\]])',' [COLOR coral]\\1[/COLOR] ', str(string))
+        #pr les tag Crochet
+        string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', str(string))
+        #pr les tag parentheses
+        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', str(string))
         #pr les series
         string = self.FormatSerie(string)
         string = re.sub('(?i)(.*) ((?:[S|E][0-9]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', str(string))
@@ -126,10 +128,10 @@ class cUtil:
         
     def FormatSerie(self,string):
         SXEX = ''
-        m = re.search('(?i)(.pisode ([0-9]+))', string)
+        m = re.search( r'(?i)(\wpisode ([0-9]+))',string.decode("utf-8"),re.UNICODE)
         if m:
             #ok y a des episodes
-            string = string.replace(m.group(1),'')
+            string = string.decode("utf-8").replace(m.group(1),'')
             SXEX = 'E' + "%02d" % int(m.group(2))
             
             #pr les saisons
@@ -137,7 +139,6 @@ class cUtil:
             if m:
                 string = string.replace(m.group(1),'')
                 SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
-            
             string = string + ' ' + SXEX
         
         else:
