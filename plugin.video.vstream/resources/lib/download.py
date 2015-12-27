@@ -58,19 +58,16 @@ class cDownloadProgressBar(threading.Thread):
         self.oUrlHandler = None
         self.file = None
         self.__oDialog = None
-        
-            
+   
         #queue = self.Memorise.get("SimpleDownloaderQueue")
         #if self.Memorise.lock("SimpleDownloaderQueueLock"):
-        #self.Memorise.set("SimpleDownloaderQueue", repr(items))
-        
+        #self.Memorise.set("SimpleDownloaderQueue", repr(items))       
         
     def createProcessDialog(self):
         self.__oDialog = xbmcgui.DialogProgressBG()
         self.__oDialog.create('Download')            
         #xbmc.sleep(1000)
-        return self.__oDialog
-        
+        return self.__oDialog        
         
     def _StartDownload(self): 
 
@@ -112,10 +109,9 @@ class cDownloadProgressBar(threading.Thread):
             #    self.processIsCanceled = True
             if xbmcgui.Window(10101).getProperty('arret') == '1':
                 self.processIsCanceled = True    
-                
-                
+                                
             #petite pause, ca ralentit le download mais evite de bouffer 100/100 ressources
-            xbmc.sleep(200)
+            xbmc.sleep(300)
         
         self.oUrlHandler.close()
         self.file.close()
@@ -134,7 +130,8 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Termine', self.__sTitle)
-                #cConfig().update()
+                if 'Liste de Téléchargement' in xbmc.getInfoLabel('ListItem.label'):
+                    cConfig().update()
             except:
                 pass
         else:
@@ -142,7 +139,8 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Arrete', self.__sTitle)
-                #cConfig().update()
+                if 'Liste de Téléchargement' in xbmc.getInfoLabel('ListItem.label'):
+                    cConfig().update()
             except:
                 pass
             return
@@ -323,10 +321,10 @@ class cDownload:
 
         
     def getDownload(self):
-        
+
         oGui = cGui()
-        sPluginHandle = cPluginHandler().getPluginHandle();
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginHandle = cPluginHandler().getPluginHandle()
+        sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'tittle')
         meta = {'title': 'Demarrer la liste'}
         item = xbmcgui.ListItem('Demarrer la liste', iconImage=cConfig().getRootArt()+'download.png')
@@ -464,7 +462,6 @@ class cDownload:
 
     def getDownloadList(self):
         oGui = cGui()
-
         oInputParameterHandler = cInputParameterHandler()        
 
         row = cDb().get_Download()
