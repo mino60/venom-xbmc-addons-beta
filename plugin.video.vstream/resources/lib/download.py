@@ -130,8 +130,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Termine', self.__sTitle)
-                if 'Liste de Téléchargement' in xbmc.getInfoLabel('ListItem.label'):
-                    cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
         else:
@@ -139,17 +138,16 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Arrete', self.__sTitle)
-                if 'Liste de Téléchargement' in xbmc.getInfoLabel('ListItem.label'):
-                    cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
             return
             
         #ok tout est bon on contiinu ou pas ?
         if Memorise.get('SimpleDownloaderQueue') == '1':
-            test.cDownload()
-            data = test.GetNextFile()
-            test.StartDownload(data)
+            tmp = cDownload()
+            data = tmp.GetNextFile()
+            tmp.StartDownload(data)
 
 
     def __updatedb(self, TotDown, iTotalSize):
@@ -224,11 +222,10 @@ class cDownloadProgressBar(threading.Thread):
                 
         return
         
-    def StopAllBeta(self):
-        
-        self.processIsCanceled = True
-           
-        return    
+    def RefreshDownloadList(self):
+        #print xbmc.getInfoLabel('Container.FolderPath')
+        if 'function=getDownload' in xbmc.getInfoLabel('Container.FolderPath'):
+            cConfig().update()  
      
         
 class cDownload:  
@@ -351,7 +348,7 @@ class cDownload:
         if not meta:
             meta = self.GetOnefile()
 
-        self.StartDownload(meta)
+        self.StartDownload(meta) 
         
     def ReadDownload(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -414,8 +411,7 @@ class cDownload:
         return row[0]
         
         
-    def StartDownload(self,data):
-        
+    def StartDownload(self,data):     
         if not (data):
             return
         
@@ -428,7 +424,6 @@ class cDownload:
         self.download(url,title,path)
                 
     def StartDownloadList(self):
-
         Memorise.set('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
         self.StartDownload(data)
@@ -461,6 +456,7 @@ class cDownload:
         return
 
     def getDownloadList(self):
+
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()        
 
