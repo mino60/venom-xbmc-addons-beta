@@ -1,33 +1,33 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
-from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
 
-from resources.lib.sucuri import SucurieBypass
+#from resources.lib.sucuri import SucurieBypass
  
+SITE_IDENTIFIER = 'film_illimit_fr'
+SITE_NAME = 'Film illimite'
+SITE_DESC = 'Films HD en streaming'
  
-SITE_IDENTIFIER = 'film_illimit_fr' #identifant nom de votre fichier remplacer les espaces et les . par _ aucun caractere speciale
-SITE_NAME = 'Film Illimit' # nom que xbmc affiche
-SITE_DESC = 'Films/Series HD en streaming' #description courte de votre source
- 
-URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/' # url de votre source
+#URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/'
+URL_MAIN = 'http://official-film-illimite.net/'
 
-MOVIE_NEWS = ('http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-de-a-a-z/', 'showMovies')
 MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
 #SERIE_SERIES = ('http://official-film-illimité.fr/serie-tv/', 'showMovies')
   
-URL_SEARCH = ('http://xn--official-film-illimit-v5b.fr/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
  
 def load():
     oGui = cGui()
@@ -60,7 +60,7 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://xn--official-film-illimit-v5b.fr/?s='+sSearchText 
+        sUrl = URL_MAIN + '?s='+sSearchText 
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -70,22 +70,22 @@ def showGenre():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action','http://xn--official-film-illimit-v5b.fr/action-aventure/'] )
-    liste.append( ['Animation','http://xn--official-film-illimit-v5b.fr/animation/'] )
-    liste.append( ['Arts Martiaux','http://xn--official-film-illimit-v5b.fr/arts-martiaux/'] )
-    liste.append( ['Biographie','http://xn--official-film-illimit-v5b.fr/biographique/'] )
-    liste.append( ['Comedie','http://xn--official-film-illimit-v5b.fr/comedie/'] )
-    liste.append( ['Drame','http://xn--official-film-illimit-v5b.fr/drame/'] )
-    liste.append( ['Epouvante Horreur','http://xn--official-film-illimit-v5b.fr/epouvante-horreur/'] )
-    liste.append( ['Fantastique','http://xn--official-film-illimit-v5b.fr/fantastique/'] )  
-    liste.append( ['Famille','http://xn--official-film-illimit-v5b.fr/famille/'] )
-    liste.append( ['Guerre','http://xn--official-film-illimit-v5b.fr/guerre/'] )
-    liste.append( ['Policier','http://xn--official-film-illimit-v5b.fr/policier/'] )
-    liste.append( ['Romance','http://xn--official-film-illimit-v5b.fr/romance/'] )
-    liste.append( ['Science Fiction','http://xn--official-film-illimit-v5b.fr/science-fiction/'] )
-    liste.append( ['Thriller/Suspense','http://xn--official-film-illimit-v5b.fr/thrillersuspense/'] )
-    liste.append( ['720p/1080p','http://xn--official-film-illimit-v5b.fr/720p1080p/'] )
-    liste.append( ['Mystère','http://xn--official-film-illimit-v5b.fr/mystere/'] )
+    liste.append( ['Action',URL_MAIN + 'action-aventure/'] )
+    liste.append( ['Animation',URL_MAIN + 'animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Biographie',URL_MAIN + 'biographique/'] )
+    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Drame',URL_MAIN + 'drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )  
+    liste.append( ['Famille',URL_MAIN + 'famille/'] )
+    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
+    liste.append( ['Policier',URL_MAIN + 'policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'romance/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Thriller/Suspense',URL_MAIN + 'thrillersuspense/'] )
+    liste.append( ['720p/1080p',URL_MAIN + '720p1080p/'] )
+    liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
                
     for sTitle,sUrl in liste:
        
@@ -107,11 +107,11 @@ def showAlpha():
             break
         
         sTitle = chr(64+i)
-        sUrl = 'http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/lettre-' + chr(96+i) + '/'
+        sUrl = URL_MAIN + 'film-de-a-a-z/lettre-' + chr(96+i) + '/'
         
         if sTitle == '@':
             sTitle= '[0-9]'
-            sUrl = 'http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/0-9/'
+            sUrl = URL_MAIN + 'film-de-a-a-z/0-9/'
           
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -131,7 +131,9 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
     sPattern = '<div class="item"><a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)" />.+?<span class="calidad2">(.+?)</span>'
     #sPattern = '<div class="item">.*<a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)" \/>.+?<span class="calidad2">(.+?)<\/span>'
@@ -202,8 +204,10 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
- 
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request() 
+    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -236,8 +240,10 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
- 
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<div class="su-tabs-pane su-clearfix"><iframe src="(.+?)"[^<>]+?><\/iframe><\/div>'
