@@ -55,15 +55,15 @@ class cUtil:
     def DecoTitle(self, string):
 
         #on vire ancienne deco en cas de bug
-        string = re.sub('\[\/*COLOR.*?\]','',string)
+        string = re.sub('\[\/*COLOR.*?\]','',str(string))
         
         #pr les tag Crochet
-        string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', str(string))
+        string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
         #pr les tag parentheses
-        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', str(string))
+        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', string)
         #pr les series
         string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', str(string))
+        string = re.sub('(?i)(.*) ((?:[S|E][0-9]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', string)
             
         #vire doubles espaces
         string = re.sub(' +',' ',string)
@@ -127,11 +127,14 @@ class cUtil:
         return str
         
     def FormatSerie(self,string):
+        #convertion unicode
+        string = string.decode("utf-8")
+        
         SXEX = ''
-        m = re.search( r'(?i)(\wpisode ([0-9]+))',string.decode("utf-8"),re.UNICODE)
+        m = re.search( r'(?i)(\wpisode ([0-9]+))',string,re.UNICODE)
         if m:
             #ok y a des episodes
-            string = string.decode("utf-8").replace(m.group(1),'')
+            string = string.replace(m.group(1),'')
             SXEX = 'E' + "%02d" % int(m.group(2))
             
             #pr les saisons
@@ -149,6 +152,7 @@ class cUtil:
                 SXEX = 'S' + "%02d" % int(m.group(2))
             
                 string = string + ' ' + SXEX
-            
+        
+        #reconvertion utf-8
         return string.encode('utf-8')
  
