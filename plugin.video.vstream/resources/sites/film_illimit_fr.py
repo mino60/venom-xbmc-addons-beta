@@ -160,7 +160,7 @@ def showMovies(sSearch = ''):
             except:
                 pass
             
-            sTitle = sName + ' [COLOR coral] ' + aEntry[3] + '[/COLOR]'
+            sTitle = sName + ' [' + aEntry[3] + ']'
             sUrl = aEntry[0].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
             sThumbnail = aEntry[1].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
 
@@ -168,11 +168,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             
  
         cConfig().finishDialog(dialog)
@@ -227,7 +228,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
  
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
