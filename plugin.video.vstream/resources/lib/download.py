@@ -163,6 +163,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 #cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
         
