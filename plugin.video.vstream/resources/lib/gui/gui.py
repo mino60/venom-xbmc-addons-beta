@@ -665,15 +665,18 @@ class cGui():
         sYear = oInputParameterHandler.getValue('sYear')
         sMeta = oInputParameterHandler.getValue('sMeta')
  
-        #1 film #2serie
+        #sMeta = 1 >> film sMeta = 2 >> serie
         sCleanTitle = CleanName(sTitle)
         
         #on vire saison et episode
-        sCleanTitle = re.sub('(?i).pisode [0-9]+', '',sCleanTitle)
-        sCleanTitle = re.sub('(?i)saison [0-9]+', '',sCleanTitle)
-        sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '',sCleanTitle)
+        if (True):#sMeta == 2:
+            sCleanTitle = re.sub('(?i).pisode [0-9]+', '',sCleanTitle)
+            sCleanTitle = re.sub('(?i)saison [0-9]+', '',sCleanTitle)
+            sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '',sCleanTitle)
+            sCleanTitle = re.sub('(?i)[S|E][0-9]+', '',sCleanTitle)
         
         ui = cConfig().WindowsBoxes(sCleanTitle, sMeta,sYear)      
+    
         
         
     # def viewinfo2(self):
