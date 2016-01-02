@@ -150,5 +150,5 @@ class cUtil:
             
                 string = string + ' ' + SXEX
             
-        return string
+        return string.encode('utf-8')
  
