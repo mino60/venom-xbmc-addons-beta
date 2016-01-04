@@ -45,9 +45,12 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
+        print sUrl
+        
         if 'plugin' not in sUrl:
             self.__sUrl = sUrl
             self.__sUrl = self.__sUrl.replace('http:', '')
+            self.__sUrl = self.__sUrl.replace('https:', '')
             self.__sUrl = self.__sUrl.replace('//', '')
             self.__sUrl = self.__sUrl.replace('www.youtube.com', '')
             self.__sUrl = self.__sUrl.replace('www.youtube-nocookie.com', '')
@@ -72,6 +75,7 @@ class cHoster(iHoster):
         
         if xbmcaddon.Addon('plugin.video.youtube'):
             videoID = self.__sUrl
+            
             #api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
             api_call = 'plugin://plugin.video.youtube/play/?video_id='+videoID
             return True, api_call
