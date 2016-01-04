@@ -45,7 +45,6 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        print sUrl
         
         if 'plugin' not in sUrl:
             self.__sUrl = sUrl
