@@ -38,11 +38,11 @@ def load():
      
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0]) 
-    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos Nouveautés', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Videos Nouveautes', 'news.png', oOutputParameterHandler)  
      
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Videos Genres', 'genres.png', oOutputParameterHandler)
                
     oGui.setEndOfDirectory()
  
@@ -62,25 +62,25 @@ def showGenre():
     oGui = cGui()
   
     liste = []
-    liste.append( ['Actualité', URL_MAIN + 'actualite/'] )
+    liste.append( ['Actualite', URL_MAIN + 'actualite/'] )
     liste.append( ['Animaux', URL_MAIN + 'animaux/'] )
     liste.append( ['Art', URL_MAIN + 'art-technique/'] )
     liste.append( ['Danse', URL_MAIN + 'danse/'] )
-    liste.append( ['Expérience', URL_MAIN + 'experiences/'] )
+    liste.append( ['Experience', URL_MAIN + 'experiences/'] )
     liste.append( ['Fake', URL_MAIN + 'fake-trucage/'] )
     liste.append( ['Guerre', URL_MAIN + 'guerre-militaire/'] )
     liste.append( ['Humour', URL_MAIN + 'humour-comedie/'] )
     liste.append( ['Internet', URL_MAIN + 'siteweb-internet/'] )
-    liste.append( ['Jeux Vidéo', URL_MAIN + 'jeuxvideo-consoles/'] )
+    liste.append( ['Jeux Video', URL_MAIN + 'jeuxvideo-consoles/'] )
     liste.append( ['Musique', URL_MAIN + 'musique/'] ) 
-    liste.append( ['Non Classé', URL_MAIN + 'non-classe'] )
+    liste.append( ['Non Classe', URL_MAIN + 'non-classe'] )
     liste.append( ['Owned', URL_MAIN + 'owned/'] )
     liste.append( ['Pub', URL_MAIN + 'publicite-marque/'] )
     liste.append( ['Santé', URL_MAIN + 'sante-corps/'] )  
     liste.append( ['Sport', URL_MAIN + 'sport/'] )
     liste.append( ['Technologie', URL_MAIN + 'technologie-innovations/'] )
     liste.append( ['Transport', URL_MAIN + 'auto-transport/'] )
-    liste.append( ['TV & Cinéma', URL_MAIN + 'tv-cinema/'] )
+    liste.append( ['TV & Cinema', URL_MAIN + 'tv-cinema/'] )
     liste.append( ['WTF?!', URL_MAIN + 'wtf/'] )
     liste.append( ['Zapping', URL_MAIN + 'zapping-web/'] )
                  
