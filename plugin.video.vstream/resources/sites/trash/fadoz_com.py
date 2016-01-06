@@ -28,7 +28,7 @@ FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img 
 URL_MAIN = 'http://www.fadoz.com/rva/'
 SEARCHPATTERN = '<fieldset><div><a href="\/rva\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rva\/(.+?)">(.+?)<(?:font|\/a)'
-NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rva\/(.+?)" class="pagenav">'
+NEXTPAGEPATTERN = '<li class="pagination-next"><strong><a href="/([^<>"]+?)" title="Suivant">Suivant<\/a>'
 FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart='
 #FRAMEPATTERN2 = '<iframe width="100%" height="350" src="(.+?)" frameborder="0" scrolling="no" allowfullscreen><\/iframe>'
 FRAMEPATTERN2 = '>(?:([^<>]+?)<\/a><\/h2>)*<iframe[^<>]+?src="(.+?)"[^<>]+?><\/iframe>'
@@ -137,6 +137,10 @@ def showMovies(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -185,7 +189,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return str(URL_MAIN) + aResult[1][0]
+        return str('http://www.fadoz.com/') + aResult[1][0]
  
     return False
  
