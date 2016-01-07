@@ -112,8 +112,12 @@ class cLibrary:
         f.write(str(content))
         f.close()
         
-        
+       
     def getLibrary(self):
+        
+        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
+        
+    def getLibrary_old(self):
         
         oGui = cGui()
 
@@ -139,7 +143,7 @@ class cLibrary:
             
         xbmc.executebuiltin("CleanLibrary(video)")
         
-    
+        
     def ShowContent(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
