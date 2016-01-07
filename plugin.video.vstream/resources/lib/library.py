@@ -7,6 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
 from resources.lib.gui.guiElement import cGuiElement
 
+import xbmcvfs
+
 import os,unicodedata,re,sys
 import urllib,re
 import xbmc,xbmcgui
@@ -26,15 +28,15 @@ class cLibrary:
             PathCache = cConfig().getSettingCache()
             self.__sMovieFolder = os.path.join(PathCache,'Movie\\')
             cConfig().setSetting('Library_folder_Movies',self.__sMovieFolder)
-        if not os.path.exists(self.__sMovieFolder):
-                os.mkdir(self.__sMovieFolder)
+        if not xbmcvfs.exists(self.__sMovieFolder):
+                xbmcvfs.mkdir(self.__sMovieFolder)
                 
         if not self.__sTVFolder:
             PathCache = cConfig().getSettingCache()
             self.__sTVFolder = os.path.join(PathCache,'TVs\\')
             cConfig().setSetting('Library_folder_TVs',self.__sTVFolder)
-        if not os.path.exists(self.__sTVFolder):
-                os.mkdir(self.__sTVFolder)
+        if not xbmcvfs.exists(self.__sTVFolder):
+                xbmcvfs.mkdir(self.__sTVFolder)
             
         self.__sTitle = ''
 
