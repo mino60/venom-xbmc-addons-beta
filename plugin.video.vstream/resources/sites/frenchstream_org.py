@@ -118,12 +118,12 @@ def showGenre():
     liste.append( ['Action',sUrl + 'action'] )
     liste.append( ['Animation',sUrl + 'animation'] )
     liste.append( ['Aventure',sUrl + 'aventure'] )
-    liste.append( ['Biographie',sUrl + 'biographie'] )
+    #liste.append( ['Biographie',sUrl + 'biographie'] )
     liste.append( ['Biopic',sUrl + 'biopic'] )
     liste.append( ['Comédie',sUrl + 'comedie'] )
     liste.append( ['Comédie Dramatique',sUrl + 'comedie-dramatique'] )
     liste.append( ['Comédie Musicale',sUrl + 'comedie-musicale'] )
-    liste.append( ['Crime',sUrl + 'crime'] )
+    #liste.append( ['Crime',sUrl + 'crime'] )
     liste.append( ['Documentaire',sUrl + 'documentaire'] )
     liste.append( ['Drame',sUrl + 'drame'] )
     liste.append( ['Epouvante Horreur',sUrl + 'epouvante-horreur'] )
@@ -132,17 +132,17 @@ def showGenre():
     liste.append( ['Fantastique',sUrl + 'fantastique'] )
     liste.append( ['Guerre',sUrl + 'guerre'] )
     liste.append( ['Histoire',sUrl + 'histoire'] )
-    liste.append( ['Horreur',sUrl + 'horreur'] )
-    liste.append( ['Judiciaire',sUrl + 'judiciaire'] )
-    liste.append( ['Médical',sUrl + 'medical'] )
+    #liste.append( ['Horreur',sUrl + 'horreur'] )
+    #liste.append( ['Judiciaire',sUrl + 'judiciaire'] )
+    #liste.append( ['Médical',sUrl + 'medical'] )
     liste.append( ['Musical',sUrl + 'musical'] )
-    liste.append( ['Mystère',sUrl + 'mystere'] )
+    #liste.append( ['Mystère',sUrl + 'mystere'] )
     liste.append( ['Policier',sUrl + 'policier'] )
     liste.append( ['Romance',sUrl + 'romance'] )
     liste.append( ['Sciense Fiction',sUrl + 'science-fiction'] )
     liste.append( ['Sport Event',sUrl + 'sport-event'] )
     liste.append( ['Thriller',sUrl + 'thriller'] )
-    liste.append( ['Thriller Psychologique',sUrl + 'thriller-psychologique'] ) 
+    #liste.append( ['Thriller Psychologique',sUrl + 'thriller-psychologique'] ) 
     liste.append( ['Western',sUrl + 'western'] )
                
     for sTitle,sUrl in liste:
@@ -592,16 +592,17 @@ def showLinks():
     
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
+
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('</i> Untitled<span>', '')
     
     oParser = cParser()
     sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
+    #sPattern='<div id="burayaclass".+?onclick="getirframe\(\'(.+?)\',\'(.+?)\'\)".+?<div class="col-md-4.+?<p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult    
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -615,19 +616,95 @@ def showLinks():
             sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl',  aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters2', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
+        
+    else:
+        
+        sPattern='<div id="burayaclass".+?onclick="getirframe\(\'(.+?)\',\'(.+?)\'\)".+?<div class="col-md-4.+?<p>(.+?)</p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            dialog = cConfig().createDialog(SITE_NAME)
+            for aEntry in aResult[1]:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
+                
+                sTitle = sMovieTitle
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' +  aEntry[2] +' [/COLOR]'
+                
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'http://')
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oOutputParameterHandler.addParameter('sParam', aEntry[0])
+                oOutputParameterHandler.addParameter('sBunuid', aEntry[1])
+                
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+        
+            cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()  
 
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    #sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sParam = oInputParameterHandler.getValue('sParam')
+    sBunuid = oInputParameterHandler.getValue('sBunuid')
+
+    sUrl = 'http://frenchstream.tv/wp-content/plugins/host-x-files/islem.php'
+    oRequestHandler = cRequestHandler(sUrl)
+    
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('islem', 'framegetir')
+    oRequestHandler.addParameters('param', sParam)
+    oRequestHandler.addParameters('bunuid', sBunuid)
+    sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
+    #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
+    #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
+    
+    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    
+     
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+            
+            sHosterUrl = str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
+def showHosters2():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
@@ -637,12 +714,12 @@ def showHosters():
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
     #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
     #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
-        
+    
     sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
+    
      
     if (aResult[0] == True):
         total = len(aResult[1])
