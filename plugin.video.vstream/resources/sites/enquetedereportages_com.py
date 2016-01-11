@@ -19,10 +19,13 @@ SITE_DESC = 'replay tv'
  
 URL_MAIN = 'http://enquetedereportages.com/'
 
-DOC_DOCS =('http://enquetedereportages.com/category/documentaire/', 'showMovies')
-REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
+DOC_DOCS =('http://enquetedereportages.com/blog/category/documentaire/', 'showMovies')
+
+#REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
+
+REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
  
-REPLAYTV_GENRES = (True, 'showGenre')
+#REPLAYTV_GENRES = (True, 'showGenre')
 
 URL_SEARCH = ('http://enquetedereportages.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -32,17 +35,38 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Films Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'films.png', oOutputParameterHandler)
- 
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emissions', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/reportage/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'films.png', oOutputParameterHandler)
+ 
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emissions', 'genres.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
+    
+def ReplayTV():
+    oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/documentaire/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/reportage/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'tv.png', oOutputParameterHandler)
+            
+    oGui.setEndOfDirectory()  
  
 def showMoviesSearch():
     oGui = cGui()
@@ -92,7 +116,8 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
    
     #sPattern = '<a href="([^<>"]+?)" title="([^"]+?)"><img [^<>]+?src="([^<>"]+?)" class="attachment-featured wp-post-image"'
-    sPattern = '<h1 class="genpost-entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a></h1><div class="genpost-entry-meta"> '
+    #sPattern = '<h1 class="genpost-entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a></h1><div class="genpost-entry-meta"> '
+    sPattern = '<figure class="genpost-featured-image"><a href="(.+?)" title="(.+?)"><img.+?src="(.+?)".+?</a></figure>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -120,7 +145,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
 			 
            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[1], oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
