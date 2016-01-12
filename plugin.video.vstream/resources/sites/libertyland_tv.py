@@ -14,7 +14,7 @@ import re, urllib, urllib2
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
-SITE_DESC = 'Les films recent en streaming et en telechargement'
+SITE_DESC = 'Les films et series recentes en streaming et en telechargement'
 
 URL_MAIN = 'http://www.libertyland.tv/'
 
@@ -148,8 +148,7 @@ def showMovies(sSearch = ''):
         else:#tout le reste
             sPOST = 'categorie=films'
         
-        
-        sPOST = sPOST + '&mot_search=' + sSearch      
+        sPOST = sPOST + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')    
         #sPOST = urllib.urllib.quote_plus(sPOST)
         
         request = urllib2.Request(sUrl,sPOST)
@@ -184,8 +183,6 @@ def showMovies(sSearch = ''):
         
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -280,7 +277,7 @@ def showLinks():
     
     oParser = cParser()
     
-    sPattern = 'src="http:\/\/www\.libertyland\.tv\/v2\/hebergeur\/[^<>]+?"> (.+?) <font style=\'color:#f00\'>(.+?)<\/font><\/h4>.+?data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">'
+    sPattern = 'src="http:\/\/www\.libertyland\.tv\/v2\/hebergeur\/[^<>]+?"> ([^<>]+?) <font style=\'color:#f00\'>(.+?)<\/font><\/h4>.+?data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
