@@ -152,10 +152,12 @@ def showMovies(sSearch = ''):
         sDisp = oInputParameterHandler.getValue('disp')
         if (sDisp == 'search2'):#serie
             sUrl = sUrl.replace(URL_MAIN,URL_MAIN2)
+            
+        sUrl = sUrl.replace('%20','+')
       
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('//ad.advertstream.com/', '').replace('http://www.adcash.com/', '').replace('http://regie.espace-plus.net/', '')
