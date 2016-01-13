@@ -13,16 +13,16 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'full_stream_org'
-SITE_NAME = 'Full-Stream.org'
+SITE_NAME = 'Full-Stream.org (en cours)'
 SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.org/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'films-en-streaming/', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'index.php?do=les-plus-vues/', 'showMovies')
-MOVIE_COMMENTS = (URL_MAIN + 'index.php?do=les-plus-commentes/', 'showMovies')
+MOVIE_NOTES = ('http://full-stream.org/movie/rating/', 'showMovies')
+MOVIE_VIEWS = ('http://full-stream.org/movie/news_read/', 'showMovies')
+MOVIE_COMMENTS = ('http://full-stream.org/movie/comm_num/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
@@ -238,6 +238,8 @@ def showMovies(sSearch = ''):
     
     oInputParameterHandler = cInputParameterHandler()
     
+    dlenewssortby = False
+    
     if sSearch:
         sUrl = sSearch
         
@@ -253,18 +255,57 @@ def showMovies(sSearch = ''):
             sUrl = sUrl
         
         #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
-        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)(?:&.+?)*".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+        sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)(?:&.+?)*".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+        sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
    
-    #recuperation de la page
-    oRequestHandler = cRequestHandler(sUrl)
+    #recuperation des tris
+    
+    #les plus noter dlenewssortby=rating&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
+    # les plus vue dlenewssortby=news_read&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
+    
+    #les plus commenter dlenewssortby=comm_num&dledirection=desc&set_new_sort=dle_sort_main&set_direction_sort=dle_direction_main
+    
+    if ("rating" in sUrl or "news_read" in sUrl or "comm_num" in sUrl):
+    
+        oRequestHandler = cRequestHandler('http://full-stream.org/movie')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)        
+        
+        oRequestHandler.addParameters('dledirection', 'desc')
+        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
+        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
+        
+        
+        if ("rating" in sUrl):
+            dlenewssortby = "rating"
+        elif ("news_read" in sUrl):
+            dlenewssortby = "news_read"
+        elif ("comm_num" in sUrl):        
+            dlenewssortby = "comm_num"
+            
+        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
+
+    
+    else :
+        oRequestHandler = cRequestHandler(sUrl)
+        
+    
+    if oInputParameterHandler.getValue('dlenewssortby'):
+    
+        dlenewssortby = oInputParameterHandler.getValue('dlenewssortby')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
+        oRequestHandler.addParameters('dledirection', 'desc')
+        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
+        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
+    
+        
+        
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -282,8 +323,8 @@ def showMovies(sSearch = ''):
                 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            # if not 'http' in sThumb:
-                # sThumb = URL_MAIN + sThumb
+            if not 'http' in sThumb:
+                sThumb = 'http://full-stream.org'+ sThumb
 
             #if sSearch:
             #    sCom = ''
@@ -308,6 +349,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oOutputParameterHandler.addParameter('dlenewssortby', dlenewssortby)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     if not sSearch:
