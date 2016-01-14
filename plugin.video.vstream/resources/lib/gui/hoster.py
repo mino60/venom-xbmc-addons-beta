@@ -90,6 +90,10 @@ class cHosterGui:
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl):
+    
+            #securiter
+        if (not sHosterUrl):
+            return False
 
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
