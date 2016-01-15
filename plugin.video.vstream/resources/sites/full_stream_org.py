@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#15/01/2016
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -13,7 +14,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'full_stream_org'
-SITE_NAME = 'Full-Stream.org (en cours)'
+SITE_NAME = 'Full-Stream.org'
 SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.org/'
@@ -133,35 +134,34 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD/HQ',URL_MAIN + 'films-en-vk-streaming/haute-qualite/'] )
-    liste.append( ['Action',URL_MAIN + 'films-en-vk-streaming/action/'] )
-    liste.append( ['Aventure',URL_MAIN + 'films-en-vk-streaming/aventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'films-en-vk-streaming/animation/'] )
+    liste.append( ['HD/HQ',URL_MAIN + 'quality/Haute-qualit%C3%A9/'] )
+    liste.append( ['Action',URL_MAIN + 'action/'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
+    liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Walt Disney',URL_MAIN + 'film/Walt+Disney/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films-en-vk-streaming/arts-martiaux/'] )
-    liste.append( ['Biopic',URL_MAIN + 'films-en-vk-streaming/biopic/'] )
-    liste.append( ['Comedie',URL_MAIN + 'films-en-vk-streaming/comedie/'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films-en-vk-streaming/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films-en-vk-streaming/comedie-musicale/'] )
-    liste.append( ['Drame',URL_MAIN + 'films-en-vk-streaming/drame/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'films-en-vk-streaming/documentaire/'] ) 
-    liste.append( ['Horreur',URL_MAIN + 'films-en-vk-streaming/horreur/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films-en-vk-streaming/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'films-en-vk-streaming/guerre/'] )
-    liste.append( ['Policier',URL_MAIN + 'films-en-vk-streaming/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'films-en-vk-streaming/romance/'] )
-    liste.append( ['Science fiction',URL_MAIN + 'films-en-vk-streaming/science-fiction/'] )
-    liste.append( ['Spectacles Scetchs',URL_MAIN + 'films-en-vk-streaming/spectacles/'] )
-    liste.append( ['Thriller',URL_MAIN + 'films-en-vk-streaming/thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'xfsearch/vkplayer/'] )
-    liste.append( ['Sur VK-Streaming',URL_MAIN + 'films-en-vk-streaming/western/'] )
-    liste.append( ['Sur YouTube',URL_MAIN + 'xfsearch/Youtube/'] )
-    liste.append( ['Sur Dailymotion',URL_MAIN + 'xfsearch/Dailymotion/'] )
-    liste.append( ['Sur YouWatch',URL_MAIN + 'xfsearch/YouWatch/'] )
-    liste.append( ['Sur Exachare',URL_MAIN + 'films-en-vk-streaming/western/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic/'] )
+    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Drame',URL_MAIN + 'drame/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] ) 
+    liste.append( ['Horreur',URL_MAIN + 'horreur/'] )
+    liste.append( ['Famille',URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
+    liste.append( ['Spectacles Scetchs',URL_MAIN + 'spectacles/'] )
+    liste.append( ['Policier',URL_MAIN + 'policier/'] )
+    liste.append( ['Historique',URL_MAIN + 'historique/'] )
+    liste.append( ['Musical',URL_MAIN + 'musical/'] )
+    liste.append( ['Romance',URL_MAIN + 'romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'western/'] )
+    
     liste.append( ['En VOSTFR',URL_MAIN + 'xfsearch/VOSTFR/'] )
     liste.append( ['En VFSTF',URL_MAIN + 'xfsearch/VFSTF/'] )
-    liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
+    #liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
                
     for sTitle,sUrl in liste:
         
@@ -384,9 +384,11 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
+    #sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
+    sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -395,10 +397,16 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
 
-            sHosterUrl = str(aEntry[0])
-            oHoster = cHosterGui().checkHoster(aEntry[1].lower())                   
-            oHoster = cHosterGui().checkHoster(aEntry[0].lower())                   
+            sHosterUrl = str(aEntry[1])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):         
                 try:
