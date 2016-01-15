@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 
-    <category label="30021">-->
+    <category label="30021">
         <setting label="30021" type="lsep"/>
         <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
@@ -16,7 +16,8 @@
     </category>
 
     <!-- search1_ = Films | search2_ = séries | search3_ = anime | search4_ = Documentaire-->
-    <category label="30022">-->
+
+    <category label="30022">
         <setting label="30022" type="lsep"/>
         
         <setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
@@ -165,7 +166,7 @@
         
     </category>
     
-    <category label="30147">-->
+    <category label="30147">
         <setting label="30022" type="lsep"/>
         
         <setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
@@ -305,8 +306,7 @@
 
     </category>
 
-    
-    <category label="30025">-->
+    <category label="30025">
         <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherches" default="true"/>
         <setting id="search1_label" type="text" label="30078" default="Films"/>
