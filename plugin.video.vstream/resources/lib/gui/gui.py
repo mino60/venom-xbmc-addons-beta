@@ -260,7 +260,7 @@ class cGui():
         #new context prend en charge les metas
         if cGui.CONTENT == "movies":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
