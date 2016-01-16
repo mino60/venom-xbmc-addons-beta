@@ -9,8 +9,19 @@ import unicodedata
 class cUtil:
     
     def CheckOccurence(self,str1,str2):
-        str1 = str1.replace('+',' ').lower()
+        str1 = str1.replace('+',' ').replace('%20',' ')
+        str1 = str1.lower()
         str2 = str2.lower()
+        try:
+            str1 = unicode(str1, 'utf-8')
+        except:
+            pass
+        try:
+            str2 = unicode(str2, 'utf-8')
+        except:
+            pass
+        str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
+        str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
         i = 0
         for part in str1.split(' '):
             if part in str2:
