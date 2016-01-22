@@ -46,7 +46,7 @@ class cLibrary:
         #sCat = oInputParameterHandler.getValue('sCat')
         #pas encore fiable comme methode
         dialog = xbmcgui.Dialog()
-        ret = dialog.select('Selectionner une categorie',['Film','Serie (Ne marche pas encore)'])
+        ret = dialog.select('Selectionner une categorie',['Film','Serie'])
         if ret == 0:
             sCat = '1'
         elif ret == -1:
@@ -115,11 +115,11 @@ class cLibrary:
         f.close()
         
        
-    def getLibrary(self):
+    def getLibrary_old(self):
         
         xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
         
-    def getLibrary_old(self):
+    def getLibrary(self):
         
         oGui = cGui()
 
@@ -144,9 +144,13 @@ class cLibrary:
             return
             
         xbmc.executebuiltin("CleanLibrary(video)")
-        
-        
+    
     def ShowContent(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFolder = oInputParameterHandler.getValue('folder')
+        xbmc.executebuiltin("Container.Update(" + sFolder + ")")
+        
+    def ShowContent_old(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         
