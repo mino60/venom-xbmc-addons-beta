@@ -86,7 +86,7 @@ class main:
 
             if (cConfig().getSetting("home-view") == 'true'):
                 oHome = cHome()
-                cAbout()
+                #cAbout()
                 exec "oHome."+ sFunction +"()"
                 return
 

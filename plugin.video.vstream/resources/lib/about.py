@@ -97,6 +97,7 @@ class cAbout:
 
         if (env == 'changelog'):
             try:
+                sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                 oRequest =  urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
                 sContent = oResponse.read()
