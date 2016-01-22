@@ -26,7 +26,7 @@ class cLibrary:
         
         if not self.__sMovieFolder:
             PathCache = cConfig().getSettingCache()
-            self.__sMovieFolder = os.path.join(PathCache,'Movie\\')
+            self.__sMovieFolder = os.path.join(PathCache,'Movies\\')
             cConfig().setSetting('Library_folder_Movies',self.__sMovieFolder)
         if not xbmcvfs.exists(self.__sMovieFolder):
                 xbmcvfs.mkdir(self.__sMovieFolder)
