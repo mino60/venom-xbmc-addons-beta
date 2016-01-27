@@ -89,6 +89,20 @@ class cHosterGui:
          
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+    def plusHoster(self, oGui):               
+
+        oInputParameterHandler = cInputParameterHandler()
+        #aParams = oInputParameterHandler.getAllParameter()
+        
+        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+        
+        sUrl = "http://www.alluc.ee/stream/lang%3Afr+"+sMovieTitle
+        oOutputParameterHandler = cOutputParameterHandler()
+
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir('alluc_ee', 'showMovies', 'Plus', 'search.png', oOutputParameterHandler)
+        
+        
     def checkHoster(self, sHosterUrl):
     
             #securiter
