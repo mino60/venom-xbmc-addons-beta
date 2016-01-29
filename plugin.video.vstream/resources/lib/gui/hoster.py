@@ -11,6 +11,7 @@ from resources.lib.player import cPlayer
 from resources.lib.db import cDb
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
+from resources.lib.util import cUtil
 import xbmc
 
 class cHosterGui:
@@ -95,6 +96,11 @@ class cHosterGui:
         #aParams = oInputParameterHandler.getAllParameter()
         
         sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+        
+        #formatage pour recheche serie
+        sMovieTitle = cUtil().FormatSerie(sMovieTitle)
+        #nettoyage pour la recherhce
+        sMovieTitle = cUtil().CleanName(sMovieTitle)
         
         sUrl = "http://www.alluc.ee/stream/lang%3Afr+"+sMovieTitle
         oOutputParameterHandler = cOutputParameterHandler()
