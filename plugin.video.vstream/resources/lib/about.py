@@ -65,7 +65,7 @@ class cAbout:
             cConfig().error("%s,%s" % (cConfig().getlanguage(30205), url))
             return False
      
-    def __getFileNamesFromFolder(self, sFolder):
+    def __getFileNamesFromFolder(self, sFolder, sSite):
         aNameList = []
         items = os.listdir(sFolder)
         for sItemName in items:
@@ -73,7 +73,7 @@ class cAbout:
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
             
-            sUrlPath = "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/"+sItemName
+            sUrlPath = "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/"+sSite+sItemName
             
             if (os.path.isdir(sFilePath) == False):
                 if (str(sFilePath.lower()).endswith('py')):   
@@ -82,14 +82,44 @@ class cAbout:
         
     def getPlugins(self):
 
-        sFolder = cConfig().getAddonPath()
-        sFolder = os.path.join(sFolder, 'resources/sites')
-
+        sMath = cConfig().getAddonPath()
+        
+        sSite =  'resources/sites/'
+        sFolder = os.path.join(sMath, sSite)
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
+
+        aFileNames = self.__getFileNamesFromFolder(sFolder, sSite) 
+
+        sSite = 'resources/hosters/'
+        sFolder = os.path.join(sMath, sSite)
+        #xbox hack        
+        sFolder = sFolder.replace('\\', '/')
+
+        aFileNames += self.__getFileNamesFromFolder(sFolder, sSite)              
         
-        aFileNames = self.__getFileNamesFromFolder(sFolder)
         return aFileNames
+        
+    
+    def getUpdate(self):
+        service_time = cConfig().getSetting('service_time')
+        if (service_time):
+            #delay mise a jour            
+            time_sleep = datetime.timedelta(hours=48)
+            time_now = datetime.datetime.now()
+            time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
+            #pour test
+            #time_service = time_service - datetime.timedelta(hours=50)
+            if (time_now - time_service > time_sleep):
+                #active la popup readme a chaque nouvelle version
+                #self.__checkversion()
+                #test le fichier md5 pour mise a jour
+                self.checkupdate('false')
+                #Function update auto
+        else:
+            cConfig().setSetting('service_time', str(datetime.datetime.now()))  
+
+        return
       
 
     def main(self, env):
@@ -107,26 +137,9 @@ class cAbout:
             return
 
         if (env == 'update'):            
-            self.__checkupdate('true')
+            self.checkupdate('true')
             return
             #return  xbmc.executebuiltin("SendClick(10)")
-
-        else :
-            #service
-            service_time = cConfig().getSetting('service_time')
-            if (service_time != ''):
-                #delay mise a jour            
-                time_sleep = datetime.timedelta(hours=48)
-                time_now = datetime.datetime.now()
-                time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
-                #pour test
-                #time_service = time_service - datetime.timedelta(hours=50)
-                if (time_now - time_service > time_sleep):
-                    self.__checkversion()
-                    self.__checkupdate('false')
-                    #Function update auto
-            else:
-                cConfig().setSetting('service_time', str(datetime.datetime.now()))
                 
         return
      
@@ -140,7 +153,7 @@ class cAbout:
      
     def __checkversion(self):
             service_version = cConfig().getSetting('service_version')
-            if (service_version != ''):          
+            if (service_version):          
                 version = cConfig().getAddonVersion()
                 if (version > service_version):
                     try:
@@ -158,7 +171,7 @@ class cAbout:
                 cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
                 return
                 
-    def __checkupdate(self, download):
+    def checkupdate(self, download):
             service_time = cConfig().getSetting('service_time')
             service_md5 = cConfig().getSetting('service_md5')
 
@@ -167,6 +180,8 @@ class cAbout:
                 sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/updates.xml.md5'
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request();
+                #a modifier pour simuler un changement
+                #sHtmlContent = "12572"
                 
                 if not service_md5:
                     cConfig().setSetting('service_md5', sHtmlContent)
@@ -188,7 +203,9 @@ class cAbout:
             return
     
     def __checkdownload(self, service_md5):
+            print "dowload"
             aPlugins = self.getPlugins()
+            print aPlugins
             total = len(aPlugins)
             dialog = cConfig().createDialog('Update')
             sContent = ""

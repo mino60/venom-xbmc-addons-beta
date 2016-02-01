@@ -75,8 +75,8 @@ class cConfig():
         if (self.__bIsDharma):
             self.__oSettings.openSettings()
         else:
-            try:		
-		xbmcplugin.openSettings( sys.argv[ 0 ] )
+            try:
+                xbmcplugin.openSettings( sys.argv[ 0 ] )
             except:
 		pass
 
