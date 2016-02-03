@@ -45,10 +45,18 @@ class cAbout:
             cConfig().error("%s,%s" % (cConfig().getlanguage(30205), url))
             return False
             
+            
+    def size(self, filepath):
+        file=open(filepath).read()
+
+        return len(file)
+        
+       
     def get_root_md5_sum(self, root, max_file_size=100*1024*1024):
         try:
-            remote = open(root,'r')
-            hash = hashlib.md5()
+            remote = open(root,'rb')
+            hash = hashlib.sha1()
+            #hash = hashlib.sha1(open(root,'rb').read()).hexdigest()
          
             total_read = 0
             while True:
@@ -114,7 +122,7 @@ class cAbout:
                 #active la popup readme a chaque nouvelle version
                 #self.__checkversion()
                 #test le fichier md5 pour mise a jour
-                self.checkupdate('false')
+                self.checkupdate()
                 #Function update auto
         else:
             cConfig().setSetting('service_time', str(datetime.datetime.now()))  
@@ -137,7 +145,7 @@ class cAbout:
             return
 
         if (env == 'update'):            
-            self.checkupdate('true')
+            self.checkupdate()
             return
             #return  xbmc.executebuiltin("SendClick(10)")
                 
@@ -170,83 +178,115 @@ class cAbout:
             else:
                 cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
                 return
-                
-    def checkupdate(self, download):
+        
+
+    def getRootPath(self, folder):
+        sMath = cConfig().getAddonPath().replace('plugin.video.vstream', '') 
+        
+        sFolder = os.path.join(sMath, folder)
+        # xbox hack        
+        sFolder = sFolder.replace('\\', '/')
+        return sFolder
+    
+    
+    def resultGit(self):
+        try:    import json
+        except: import simplejson as json
+        
+        try: 
+            sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/sites.json'
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request();
+            result = json.loads(sHtmlContent)
+            
+            sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/hosts.json'
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request();
+            result += json.loads(sHtmlContent)
+        except:
+            return False
+        return result
+    
+    
+    def checkupdate(self):
+            
             service_time = cConfig().getSetting('service_time')
             service_md5 = cConfig().getSetting('service_md5')
-
-            try:
-                #sUrl = 'https://api.github.com/repos/LordVenom/venom-xbmc-addons/commits/master'
-                sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/updates.xml.md5'
-                oRequestHandler = cRequestHandler(sUrl)
-                sHtmlContent = oRequestHandler.request();
-                #a modifier pour simuler un changement
-                #sHtmlContent = "12572"
+            
+            
+            dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")
+            
+            result = self.resultGit()
+            
+            sDown = 0
+            
+            for i in result:
                 
-                if not service_md5:
-                    cConfig().setSetting('service_md5', sHtmlContent)
-                    service_md5 = sHtmlContent
+                try: 
+                    rootpath = self.getRootPath(i['path'])
+                    
+                    if (self.size(rootpath) != i['size']):
+                        sDown = sDown+1
+                except:
+                    pass
+             
+            if (sDown != 0):
+                cConfig().setSetting('home_update', str('true'))                
+            else:
+                cConfig().showInfo('vStream', 'Fichier a jour')
+                cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                cConfig().setSetting('home_update', str('false'))
                 
-                if (service_md5 != sHtmlContent):
-                    cConfig().setSetting('home_update', str('true'))
-                    
-                    if (download == 'true'):
-                        self.__checkdownload(sHtmlContent)
-                    
-                else:
-                    if (download == 'true'):
-                        cConfig().showInfo('vStream', 'Fichier a jour')
-                        
-                    cConfig().setSetting('home_update', str('false'))
-            except:
-                return
             return
     
-    def __checkdownload(self, service_md5):
-            print "dowload"
-            aPlugins = self.getPlugins()
-            print aPlugins
-            total = len(aPlugins)
+    def checkdownload(self):
+
+            result = self.resultGit()
+            total = len(result)
             dialog = cConfig().createDialog('Update')
             sContent = ""
             sdown = 0
 
-            for aPlugin in aPlugins:
+            for i in result:
+            
+            
                 cConfig().updateDialog(dialog, total)
-                RootUrl = aPlugin[0]
-                WebUrl = aPlugin[1]
-                ItemName = aPlugin[2]
-                PlugWeb = self.get_remote_md5_sum(WebUrl)
-                PlugRoot = self.get_root_md5_sum(RootUrl)
-                if (PlugWeb != PlugRoot) and (PlugWeb):
-                    try:
-                        self.__download(WebUrl, RootUrl)
-                        sContent += "[COLOR green]"+ItemName+"[/COLOR] \n"
-                        sdown = sdown+1
-                    except:
-                        sContent += "[COLOR red]"+ItemName+"[/COLOR] \n"
+               
+                try:
+                    rootpath = self.getRootPath(i['path'])
+                    
+                    if (self.size(rootpath) != i['size']):
+                        try:
+                            self.__download(i['download_url'], rootpath)
+                            sContent += "[COLOR green]"+i['name']+"[/COLOR] \n"
+                            sdown = sdown+1
+                        except:
+                            pass
+                except:
+                    pass
               
             cConfig().finishDialog(dialog)
             sContent += "Fichier mise à jour %s / %s" %  (sdown, total)
             #self.TextBoxes('vStream mise à Jour', sContent)
             cConfig().setSetting('service_time', str(datetime.datetime.now()))
-            cConfig().setSetting('service_md5', service_md5)
             cConfig().setSetting('home_update', str('false'))
             cConfig().createDialogOK(sContent)
             return
             
     def __download(self, WebUrl, RootUrl):
+        try:
             inf = urllib.urlopen(WebUrl)
-            
             f = xbmcvfs.File(RootUrl, 'w')
-            #if (xbmcvfs.exists(RootUrl)):
-                #xbmcvfs.delete()
             #save it
             line = inf.read()         
             f.write(line)
             
             inf.close()
             f.close()
+        except:
+            pass
+        return
+        
             
         
     def TextBoxes(self, heading, anounce):

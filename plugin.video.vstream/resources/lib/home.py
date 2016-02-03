@@ -109,7 +109,7 @@ class cHome:
     def showUpdate(self):
         try:
             from resources.lib.about import cAbout
-            cAbout().checkupdate('true')
+            cAbout().checkdownload()
         except:
             pass
         return
