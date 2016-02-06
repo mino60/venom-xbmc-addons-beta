@@ -214,28 +214,36 @@ class cAbout:
             service_md5 = cConfig().getSetting('service_md5')
             
             
-            dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")
+            #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")
             
             result = self.resultGit()
-            
+           
             sDown = 0
             
-            for i in result:
-                
-                try: 
-                    rootpath = self.getRootPath(i['path'])
+            if result:
+            
+                for i in result:
                     
-                    if (self.size(rootpath) != i['size']):
-                        sDown = sDown+1
-                except:
-                    pass
-             
-            if (sDown != 0):
-                cConfig().setSetting('home_update', str('true'))                
-            else:
-                cConfig().showInfo('vStream', 'Fichier a jour')
-                cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                cConfig().setSetting('home_update', str('false'))
+                    try: 
+                        rootpath = self.getRootPath(i['path'])
+                        
+                        if (self.size(rootpath) != i['size']):
+                            #print i['name']
+                            #print self.size(rootpath)
+                            #print i['size']
+                            sDown = sDown+1
+                            
+                    except:
+                        pass
+                 
+                if (sDown != 0):
+                    cConfig().setSetting('home_update', str('true')) 
+                    cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                    dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
+                else:
+                    #cConfig().showInfo('vStream', 'Fichier a jour')
+                    cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                    cConfig().setSetting('home_update', str('false'))
                 
             return
     
@@ -244,33 +252,36 @@ class cAbout:
             result = self.resultGit()
             total = len(result)
             dialog = cConfig().createDialog('Update')
-            sContent = ""
+            site = []
             sdown = 0
 
-            for i in result:
-            
-            
-                cConfig().updateDialog(dialog, total)
-               
-                try:
-                    rootpath = self.getRootPath(i['path'])
-                    
-                    if (self.size(rootpath) != i['size']):
-                        try:
-                            self.__download(i['download_url'], rootpath)
-                            sContent += "[COLOR green]"+i['name']+"[/COLOR] \n"
-                            sdown = sdown+1
-                        except:
-                            pass
-                except:
-                    pass
-              
-            cConfig().finishDialog(dialog)
-            sContent += "Fichier mise à jour %s / %s" %  (sdown, total)
-            #self.TextBoxes('vStream mise à Jour', sContent)
-            cConfig().setSetting('service_time', str(datetime.datetime.now()))
-            cConfig().setSetting('home_update', str('false'))
-            cConfig().createDialogOK(sContent)
+            if result: 
+                
+                for i in result:
+                    cConfig().updateDialog(dialog, total)
+                   
+                    try:
+                        rootpath = self.getRootPath(i['path'])
+                        
+                        if (self.size(rootpath) != i['size']):
+                            try:
+                                self.__download(i['download_url'], rootpath)
+                                site.append("[COLOR green]"+i['name'].encode("utf-8")+"[/COLOR]")
+                                sdown = sdown+1
+                            except:
+                                site.append("[COLOR red]"+i['name'].encode("utf-8")+"[/COLOR]")
+                                sdown = sdown+1
+                                pass
+                    except:
+                        pass
+                 
+                cConfig().finishDialog(dialog)
+                sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
+                #self.TextBoxes('vStream mise à Jour', sContent)
+                cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                cConfig().setSetting('home_update', str('false'))
+                fin = cConfig().createDialogOK(sContent)
+                cConfig().update()
             return
             
     def __download(self, WebUrl, RootUrl):
