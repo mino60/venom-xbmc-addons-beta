@@ -6,9 +6,6 @@ import urllib, urllib2
 import xbmc, xbmcgui, xbmcaddon
 import xbmcvfs
 import sys, datetime, time, os
-import hashlib, md5
-try:    import json
-except: import simplejson as json
 
 sLibrary = xbmc.translatePath(cConfig().getAddonPath())
 sys.path.append (sLibrary) 
@@ -23,105 +20,25 @@ class cAbout:
 
     def __init__(self):
         self.main(sys.argv[1])
-        #self.__sFunctionName = ''
-
-    def get_remote_md5_sum(self, url, max_file_size=100*1024*1024):
-        try:
-            remote = urllib2.urlopen(url)
-            hash = hashlib.md5()
-         
-            total_read = 0
-            while True:
-                data = remote.read(4096)
-                total_read += 4096
-         
-                if not data or total_read > max_file_size:
-                    break
-         
-                hash.update(data)
-         
-            return hash.hexdigest()
-        except:            
-            cConfig().error("%s,%s" % (cConfig().getlanguage(30205), url))
-            return False
-            
+        #self.__sFunctionName = ''            
             
     def size(self, filepath):
         file=open(filepath).read()
 
         return len(file)
         
-       
-    def get_root_md5_sum(self, root, max_file_size=100*1024*1024):
-        try:
-            remote = open(root,'rb')
-            hash = hashlib.sha1()
-            #hash = hashlib.sha1(open(root,'rb').read()).hexdigest()
-         
-            total_read = 0
-            while True:
-                data = remote.read(4096)
-                total_read += 4096
-         
-                if not data or total_read > max_file_size:
-                    break
-         
-                hash.update(data)
-         
-            return hash.hexdigest()
-        except:            
-            cConfig().error("%s,%s" % (cConfig().getlanguage(30205), url))
-            return False
-     
-    def __getFileNamesFromFolder(self, sFolder, sSite):
-        aNameList = []
-        items = os.listdir(sFolder)
-        for sItemName in items:
-            sFilePath = os.path.join(sFolder, sItemName)
-            # xbox hack
-            sFilePath = sFilePath.replace('\\', '/')
-            
-            sUrlPath = "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/"+sSite+sItemName
-            
-            if (os.path.isdir(sFilePath) == False):
-                if (str(sFilePath.lower()).endswith('py')):   
-                    aNameList.append([sFilePath,sUrlPath,sItemName])
-        return aNameList
-        
-    def getPlugins(self):
-
-        sMath = cConfig().getAddonPath()
-        
-        sSite =  'resources/sites/'
-        sFolder = os.path.join(sMath, sSite)
-        # xbox hack        
-        sFolder = sFolder.replace('\\', '/')
-
-        aFileNames = self.__getFileNamesFromFolder(sFolder, sSite) 
-
-        sSite = 'resources/hosters/'
-        sFolder = os.path.join(sMath, sSite)
-        #xbox hack        
-        sFolder = sFolder.replace('\\', '/')
-
-        aFileNames += self.__getFileNamesFromFolder(sFolder, sSite)              
-        
-        return aFileNames
-        
     
     def getUpdate(self):
         service_time = cConfig().getSetting('service_time')
         if (service_time):
             #delay mise a jour            
-            time_sleep = datetime.timedelta(hours=48)
+            time_sleep = datetime.timedelta(hours=72)
             time_now = datetime.datetime.now()
             time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
             #pour test
             #time_service = time_service - datetime.timedelta(hours=50)
             if (time_now - time_service > time_sleep):
-                #active la popup readme a chaque nouvelle version
-                #self.__checkversion()
-                #test le fichier md5 pour mise a jour
+                #test les fichier pour mise a jour
                 self.checkupdate()
                 #Function update auto
         else:
@@ -143,11 +60,6 @@ class cAbout:
             except:            
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
             return
-
-        if (env == 'update'):            
-            self.checkupdate()
-            return
-            #return  xbmc.executebuiltin("SendClick(10)")
                 
         return
      
@@ -210,9 +122,7 @@ class cAbout:
     
     def checkupdate(self):
             
-            service_time = cConfig().getSetting('service_time')
-            service_md5 = cConfig().getSetting('service_md5')
-            
+            service_time = cConfig().getSetting('service_time')            
             
             #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")
             
