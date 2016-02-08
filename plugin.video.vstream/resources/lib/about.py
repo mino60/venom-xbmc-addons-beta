@@ -23,9 +23,11 @@ class cAbout:
         #self.__sFunctionName = ''            
             
     def size(self, filepath):
-        file=open(filepath).read()
+        file=open(filepath)
+        Content = file.read()
+        file.close()
 
-        return len(file)
+        return len(Content)
         
     
     def getUpdate(self):
@@ -49,7 +51,6 @@ class cAbout:
 
     def main(self, env):
         
-
         if (env == 'changelog'):
             try:
                 sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
@@ -72,24 +73,24 @@ class cAbout:
         return date
      
     def __checkversion(self):
-            service_version = cConfig().getSetting('service_version')
-            if (service_version):          
-                version = cConfig().getAddonVersion()
-                if (version > service_version):
-                    try:
-                        sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
-                        oRequest =  urllib2.Request(sUrl)
-                        oResponse = urllib2.urlopen(oRequest)
-                        sContent = oResponse.read()
-                        self.TextBoxes('Changelog', sContent)
-                        cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
-                        return
-                    except:            
-                        cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
-                        return
-            else:
-                cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
-                return
+        service_version = cConfig().getSetting('service_version')
+        if (service_version):          
+            version = cConfig().getAddonVersion()
+            if (version > service_version):
+                try:
+                    sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
+                    oRequest =  urllib2.Request(sUrl)
+                    oResponse = urllib2.urlopen(oRequest)
+                    sContent = oResponse.read()
+                    self.TextBoxes('Changelog', sContent)
+                    cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
+                    return
+                except:            
+                    cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
+                    return
+        else:
+            cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
+            return
         
 
     def getRootPath(self, folder):
@@ -142,6 +143,7 @@ class cAbout:
                             #print self.size(rootpath)
                             #print i['size']
                             sDown = sDown+1
+                            break #Si on en trouve un, pas besoin de tester les autres.
                             
                     except:
                         pass
