@@ -561,9 +561,6 @@ class cDownload:
         
         oGui = cConfig()
         
-        print '*****'
-        print sTitle
-        
         #titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
         sTitle = self.__createDownloadFilename(sTitle)
