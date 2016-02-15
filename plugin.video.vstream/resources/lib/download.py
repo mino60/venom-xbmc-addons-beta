@@ -1,14 +1,15 @@
 #-*- coding: utf-8 -*-
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.config import cConfig
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
+#from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.player import cPlayer
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.db import cDb
+from resources.lib.util import cUtil
+
 #from traceback import print_exc
 import urllib2,urllib
 import xbmcplugin, xbmc
@@ -265,6 +266,7 @@ class cDownload:
         self.__sTitle = sTitle
         
         #resolve url
+        from resources.lib.gui.hoster import cHosterGui
         oHoster = cHosterGui().checkHoster(sDBUrl)
         oHoster.setUrl(sDBUrl)
         aLink = oHoster.getMediaLink()
@@ -299,7 +301,10 @@ class cDownload:
             
 
     def __createTitle(self, sUrl, sTitle):
-        sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        
+        #sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        sTitle = cUtil().FormatSerie(sTitle)
+        sTitle = cUtil().CleanName(sTitle)
                
         aTitle = sTitle.rsplit('.')
         #Si deja extension
@@ -338,9 +343,22 @@ class cDownload:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oGui.addDir(SITE_IDENTIFIER, 'getDownloadList', 'Liste de Téléchargement', 'download.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'CleanDownloadList', 'Nettoyer la liste (Fichiers finis)', 'download.png', oOutputParameterHandler)
           
         oGui.setEndOfDirectory()   
     
+    def CleanDownloadList(self):
+        
+        try:
+            cDb().clean_download()
+            cConfig().showInfo('vStream', 'Liste mise a jour')
+            #cConfig().update()
+        except:
+            pass
+
+        return
     
     def dummy(self):
         return
@@ -455,11 +473,11 @@ class cDownload:
         cConfig().update()
   
         return
-
+   
     def getDownloadList(self):
-
+    
         oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()        
+        oInputParameterHandler = cInputParameterHandler()
 
         row = cDb().get_Download()
         
@@ -542,6 +560,9 @@ class cDownload:
         sUrl = meta['url']
         
         oGui = cConfig()
+        
+        print '*****'
+        print sTitle
         
         #titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
