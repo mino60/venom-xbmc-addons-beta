@@ -237,6 +237,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('wat_tv')
         if ('thevid' in sHosterUrl):
             return cHosterHandler().getHoster('thevid')
+        if ('nosvideo' in sHosterUrl):
+            return cHosterHandler().getHoster('nosvideo')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
