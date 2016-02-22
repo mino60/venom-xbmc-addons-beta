@@ -483,7 +483,7 @@ def showMovies(sSearch = ''):
         oGui.addNone(SITE_IDENTIFIER)
     if (aResult2[0] == True):
         list = []
-        sPattern = '<li (?:class="budur" )*data-hover="details" data-title="(.+?)" data-ozet="(.*?)" data-tur.+?<a href="(.+?)">.+?<img src="(.+?)" class="film-list-thumb".+?<div class="film-list-quality"><span>([0-9]{3}p)*<\/span>'
+        sPattern = '<li (?:class="budur" )*data-hover="details" data-title="(.+?)" data-ozet="(.*?)" data-tur.+?<a href="(.+?)">.+?<img src="(.+?)" class="film-list-thumb".+?<div class="film-list-quality"><span>([0-9]{3,4}p)*<\/span>'
         for aEntry in aResult2[1]:
             aResult3 = oParser.parse(aEntry, sPattern)
             if (aResult3[0] == True):
