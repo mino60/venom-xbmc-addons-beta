@@ -131,7 +131,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+    #Meilleure resolution sthumbnail
+    sHtmlContent = sHtmlContent.replace('119x125','125x160')
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
