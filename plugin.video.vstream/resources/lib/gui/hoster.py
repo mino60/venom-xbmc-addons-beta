@@ -159,6 +159,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptostream')
         if ('dailymotion' in sHosterUrl):
             return cHosterHandler().getHoster('dailymotion')
+        if ('dai.ly' in sHosterUrl):
+            return cHosterHandler().getHoster('dailymotion')
         if ('azerfile' in sHosterUrl):
             return cHosterHandler().getHoster('azerfile')
         if ('vodlocker' in sHosterUrl):
