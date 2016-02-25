@@ -21,7 +21,7 @@ URL_MAIN = 'http://frenchstream.tv/'
 
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'son-eklenen-filmler/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films-hd/', 'showMovies')
 #MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
