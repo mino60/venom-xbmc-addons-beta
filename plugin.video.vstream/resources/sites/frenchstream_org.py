@@ -16,12 +16,13 @@ SITE_IDENTIFIER = 'frenchstream_org'
 SITE_NAME = 'FrenchStream'
 SITE_DESC = 'Films/Series/Animes en streaming'
 
-#URL_MAIN = URL_MAIN + ''
 URL_MAIN = 'http://frenchstream.tv/'
+#URL_MAIN = 'http://154.46.33.11/'
 
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_HD = (URL_MAIN + 'films-hd/', 'showMovies')
 #MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
 #MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes/', 'showMovies')
@@ -45,7 +46,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'news.png', oOutputParameterHandler)
     
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
