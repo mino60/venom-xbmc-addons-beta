@@ -68,7 +68,7 @@ def conf():
 def get_response(img,cookie):    
     
     #on telecharge l'image
-    file = os.path.join(PathCache,'Captcha.png')
+    filename  = os.path.join(PathCache,'Captcha.png')
 
     headers2 = {
         'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
@@ -98,7 +98,7 @@ def get_response(img,cookie):
     #on affiche le dialogue
     solution = ''
     try:
-        img = xbmcgui.ControlImage(450, 0, 400, 130, file)
+        img = xbmcgui.ControlImage(450, 0, 400, 130, filename)
         wdlg = xbmcgui.WindowDialog()
         wdlg.addControl(img)
         wdlg.show()
