@@ -2,7 +2,9 @@
 from resources.lib.gui.gui import cGui
 from time import time
 import base64
-import urllib2,xbmc,urllib,re
+import urllib2,urllib,re
+
+import xbmc,xbmcgui
 
 import xbmcaddon,os
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
