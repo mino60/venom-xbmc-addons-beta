@@ -1,3 +1,4 @@
+from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
@@ -9,6 +10,7 @@ class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Uptobox'
         self.__sFileName = self.__sDisplayName
+        self.oPremiumHandler = None
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -79,9 +81,14 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
+        self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
+        if (self.oPremiumHandler.isPremiumModeAvailable()):
+            return self.__getMediaLinkByPremiumUser()
+
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         oRequest = cRequestHandler(self.__sUrl)
@@ -91,6 +98,51 @@ class cHoster(iHoster):
         sPattern =  "<source src='([^<>']+?\/0)' type='[^'><]+?' data-res='([0-9]+p)'"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if (aResult[0] == True):
+            url=[]
+            qua=[]
+            
+            for aEntry in aResult[1]:
+                url.append(aEntry[0])
+                qua.append(aEntry[1])
+             
+            dialog2 = xbmcgui.Dialog()
+            ret = dialog2.select('Select Quality',qua)
+            if (ret > -1):
+                stream_url = url[ret]
+            else:
+                return False, False
+            
+            stream_url = urllib.unquote(stream_url)
+            if not stream_url.startswith('http'):
+                stream_url = 'http:' + stream_url
+            return True, stream_url
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            return False, False
+        
+        return False, False
+        
+    def __getMediaLinkByPremiumUser(self):
+        
+        #if not self.oPremiumHandler.Authentificate():
+        #    return False, False
+        
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+
+        sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
+        
+        #fh = open('c:\\upto.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+
+        #sPattern =  "<source src='(.+?)'"
+        sPattern =  "<source src='([^<>']+?\/0)' type='[^'><]+?' data-res='([0-9]+p)'"
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        print aResult
         
         if (aResult[0] == True):
             url=[]
