@@ -19,7 +19,7 @@ class cPremiumHandler:
         self.isLogin = False
 
     def isPremiumModeAvailable(self):
-        return True
+        return False
         bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
         if (bIsPremium == 'true'):
             cConfig().log("usa premiumaccount for hoster " +  str(self.__sHosterIdentifier))
