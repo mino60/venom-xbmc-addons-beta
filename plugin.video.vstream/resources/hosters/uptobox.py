@@ -126,8 +126,8 @@ class cHoster(iHoster):
         
     def __getMediaLinkByPremiumUser(self):
         
-        #if not self.oPremiumHandler.Authentificate():
-        #    return False, False
+        if not self.oPremiumHandler.Authentificate():
+            return False, False
         
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
