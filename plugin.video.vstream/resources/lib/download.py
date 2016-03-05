@@ -714,7 +714,7 @@ class cDownload:
                             
                         cConfig().updateDialog(dialog, 100)
                         tempo = tempo - 1
-                        xbmc.sleep(1000)
+                        xbmc.sleep(500)
                         
                     cConfig().finishDialog(dialog)
 
