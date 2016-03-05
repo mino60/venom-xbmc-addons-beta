@@ -73,8 +73,8 @@ class cPremiumHandler:
         if 'uptobox' in self.__sHosterIdentifier:
             url = 'https://login.uptobox.com/logarithme'
             post_data['op'] = 'login'
-            post_data['login'] = 'test987'
-            post_data['password'] = 'sthedsswalant'
+            post_data['login'] = 'user'
+            post_data['password'] = 'password'
         #si aucun de trouve on retourne
         else:
             return False
