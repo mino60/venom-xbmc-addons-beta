@@ -69,8 +69,8 @@ class cHosterGui:
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
+        #Download menu
         if (oHoster.isDownloadable() == True):
-            #Beta context download menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
@@ -78,6 +78,16 @@ class cHosterGui:
             oContext.setTitle(cConfig().getlanguage(30202))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
+            
+        if (oHoster.isDownloadable() == True):
+            #Beta context download and view menu
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('AddtoDownloadListandview')
+            oContext.setTitle('DL et Visualiser')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)           
         
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -111,7 +121,7 @@ class cHosterGui:
         
     def checkHoster(self, sHosterUrl):
     
-            #securiter
+        #securitee
         if (not sHosterUrl):
             return False
 
@@ -160,7 +170,7 @@ class cHosterGui:
         if ('dailymotion' in sHosterUrl):
             return cHosterHandler().getHoster('dailymotion')
         if ('dai.ly' in sHosterUrl):
-            return cHosterHandler().getHoster('dailymotion')
+            return cHosterHandler().getHoster('dailymotion')           
         if ('azerfile' in sHosterUrl):
             return cHosterHandler().getHoster('azerfile')
         if ('vodlocker' in sHosterUrl):
@@ -241,6 +251,14 @@ class cHosterGui:
             return cHosterHandler().getHoster('thevid')
         if ('nosvideo' in sHosterUrl):
             return cHosterHandler().getHoster('nosvideo')
+
+        #Lien telechargeable a convertir en stream
+        if ('1fichier' in sHosterUrl):
+            return cHosterHandler().getHoster('onefichier')
+        if ('uptobox' in sHosterUrl):
+            return cHosterHandler().getHoster('uptobox')
+        if ('uplea.com' in sHosterUrl):
+            return cHosterHandler().getHoster('uplea')            
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
