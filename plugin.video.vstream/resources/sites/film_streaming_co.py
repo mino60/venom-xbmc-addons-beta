@@ -176,9 +176,9 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
     
-    fh = open('c:\\test.txt', "w")
-    fh.write(sHtmlContent)
-    fh.close()
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     sPattern = '<td.+?class="over_modul">.+?<a href="(.+?)"><img src="(.+?)" border="0" alt="(.+?)\sstreaming".+?</a>'
 
