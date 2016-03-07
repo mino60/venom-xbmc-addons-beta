@@ -143,7 +143,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('turbovid')
         if ('youtube' in sHosterUrl):
             return cHosterHandler().getHoster('youtube')
-        if ('youtu.be' in sHosterUrL):
+        if ('youtu.be' in sHosterUrl):
             return cHosterHandler().getHoster('youtube')
         if ('rutube' in sHosterUrl):
             return cHosterHandler().getHoster('rutube')
