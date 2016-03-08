@@ -13,6 +13,7 @@ from resources.lib.util import cUtil
 import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
 
+#clone de dpstreaming.tv
 
 SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'Streamingk.com'
