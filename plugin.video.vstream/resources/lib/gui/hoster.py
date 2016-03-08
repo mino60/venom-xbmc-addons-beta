@@ -253,6 +253,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('thevid')
         if ('nosvideo' in sHosterUrl):
             return cHosterHandler().getHoster('nosvideo')
+        if ('vimple.ru' in sHosterUrl):
+            return cHosterHandler().getHoster('vimple')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHosterUrl):
