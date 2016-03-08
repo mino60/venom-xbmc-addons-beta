@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #
 # author : Djeman
-# Updated by Shani-08
+# Updated by Shani-08 (https://github.com/Shani-08/ShaniXBMCWork2)
 
 import re
 
