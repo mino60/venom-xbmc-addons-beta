@@ -73,8 +73,8 @@ class cPremiumHandler:
         if 'uptobox' in self.__sHosterIdentifier:
             url = 'https://login.uptobox.com/logarithme'
             post_data['op'] = 'login'
-            post_data['login'] = 'user'
-            post_data['password'] = 'password'
+            post_data['login'] = 'xxxxx'
+            post_data['password'] = 'xxxxx'
         #si aucun de trouve on retourne
         else:
             return False
@@ -124,11 +124,18 @@ class cPremiumHandler:
         #save cookie
         self.SaveCookie(self.__sHosterIdentifier,cookies)
         
+        cGui().showInfo(self.__sDisplayName, 'Authentification reussie' , 5)
+        
         return True
         
-    def GetHtml(self,url):
+    def GetHtml(self,url,data = None):
         cookies = self.Readcookie(self.__sHosterIdentifier)
-        req = urllib2.Request(url, None, headers)
+        
+        req = urllib2.Request(url, data, headers)
+        
+        if not (data == None):
+            req.add_header('Referer', url)
+        
         req.add_header('Cookie', cookies)
         
         try:
