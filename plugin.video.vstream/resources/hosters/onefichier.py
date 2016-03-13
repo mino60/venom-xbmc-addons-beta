@@ -64,6 +64,10 @@ class cHoster(iHoster):
         return
         
     def getMediaLink(self):
+        import sys
+        if 'site=cDownload&function' not in sys.argv[2]:
+            oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            return False,False
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
@@ -112,11 +116,10 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             #xbmc.sleep(1*1000)
             print aResult[1][0]
-            #return
             
             api_call = aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
         
-        print api_call
+        #print api_call
         
         if (api_call):
             return True, api_call
