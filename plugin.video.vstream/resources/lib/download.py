@@ -282,17 +282,17 @@ class cDownload:
         aLink = oHoster.getMediaLink()
 
         #aLink = (True,'https://github.com/LordVenom/venom-xbmc-addons-beta/blob/master/plugin.video.vstream/Thumbs.db?raw=true')
-
+        
         if (aLink[0] == True):
             sUrl = aLink[1]
         else:
+            print 'Lien non resolvable'
             cConfig().showInfo('Lien non resolvable', sTitle)
             return False
             
         if not sUrl.startswith('http') or sUrl.endswith('.m3u8'):
             cConfig().showInfo('Format non supporte', sTitle)
-            print sUrl
-            return False      
+            return False
         
         try:
             cConfig().log("Telechargement " + str(sUrl))
@@ -701,36 +701,38 @@ class cDownload:
                     path = row[0][3]
                     thumbnail = row[0][4]
                     status = row[0][8]
-                    self.download(url,title,path,True) #Download in fastmode
-                    
-                    #ok on attend un peu, et on lance le stream
-                    tempo = 100
-                    dialog = cConfig().createDialog('Creation buffer')
-       
-                    while (tempo > 0):
-                        #if canceled do nothing
-                        if dialog.iscanceled():
-                            return
-                            
-                        cConfig().updateDialog(dialog, 100)
-                        tempo = tempo - 1
-                        xbmc.sleep(500)
+                    if (self.download(url,title,path,True) == True): #Download in fastmode
                         
-                    cConfig().finishDialog(dialog)
+                        #ok on attend un peu, et on lance le stream
+                        tempo = 100
+                        dialog = cConfig().createDialog('Creation buffer')
+           
+                        while (tempo > 0):
+                            #if canceled do nothing
+                            if dialog.iscanceled():
+                                return
+                                
+                            cConfig().updateDialog(dialog, 100)
+                            tempo = tempo - 1
+                            xbmc.sleep(500)
+                            
+                        cConfig().finishDialog(dialog)
 
-                    oGuiElement = cGuiElement()
-                    oGuiElement.setSiteName(SITE_IDENTIFIER)
-                    oGuiElement.setMediaUrl(path)
-                    oGuiElement.setTitle(title)
-                    #oGuiElement.getInfoLabel()
-                    
-                    oPlayer = cPlayer()
+                        oGuiElement = cGuiElement()
+                        oGuiElement.setSiteName(SITE_IDENTIFIER)
+                        oGuiElement.setMediaUrl(path)
+                        oGuiElement.setTitle(title)
+                        #oGuiElement.getInfoLabel()
+                        
+                        oPlayer = cPlayer()
 
-                    if not (sys.argv[ 1 ] == '-1'):
-                        oPlayer.run(oGuiElement, title, path)
-                    else:
-                        oPlayer.clearPlayList()
-                        oPlayer.addItemToPlaylist(oGuiElement)
-                        oPlayer.startPlayer()
+                        if not (sys.argv[ 1 ] == '-1'):
+                            oPlayer.run(oGuiElement, title, path)
+                        else:
+                            oPlayer.clearPlayList()
+                            oPlayer.addItemToPlaylist(oGuiElement)
+                            oPlayer.startPlayer()
             
+                    else:
+                        cConfig().showInfo('Echec du telechargement', 'Erreur')
         return
