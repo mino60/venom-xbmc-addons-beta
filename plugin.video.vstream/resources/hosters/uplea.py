@@ -59,6 +59,10 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
+        import sys
+        if 'site=cDownload&function' not in sys.argv[2]:
+            oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            return False,False
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
@@ -127,7 +131,9 @@ class cHoster(iHoster):
             cGui().showInfo(self.__sDisplayName, 'Waiting time' , waitingtime)
             xbmc.sleep(waitingtime*1000)
             
-            return True, aResult[1][0]
+            print aResult[1][0]
+            
+            return True, aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
