@@ -87,7 +87,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         
         dialog3 = xbmcgui.Dialog()
-        ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Passer par le DL (via Uptobox)'])
+        ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
 
         #mode DL
         if ret == 1:
@@ -155,23 +155,16 @@ class cHoster(iHoster):
         
         if (aResult[0]):
             sForm = aResult[1][0]
-            #print sForm
+
             data = {}
             for match in re.finditer(r'type="hidden"\s+name="(.+?)"\s+value="(.*?)"', sForm):
                 key, value = match.groups()
                 data[key] = value
                 
             postdata = urllib.urlencode( data )
-            #print postdata
-            
             headers['Referer'] = self.__sUrl
-            #print headers
-            
+           
             sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl,postdata) 
-                
-            #fh = open('c:\\upto.txt', "w")
-            #fh.write(sHtmlContent)
-            #fh.close()
             
             sPattern =  '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"]\s*>\s*<span class\s*=\s*[\'"]button_upload green[\'"]\s*>'
             aResult = oParser.parse(sHtmlContent, sPattern)
