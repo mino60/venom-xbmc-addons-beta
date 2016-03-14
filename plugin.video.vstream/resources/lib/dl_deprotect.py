@@ -114,6 +114,7 @@ def get_response(img,cookie):
         else:
             cGui().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
     finally:
+        wdlg.removeControl(img)
         wdlg.close()
         
     return solution
