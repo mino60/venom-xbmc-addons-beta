@@ -14,18 +14,17 @@ headers = { 'User-Agent' : UA }
 class cPremiumHandler:
 
     def __init__(self, sHosterIdentifier):
-        self.__sHosterIdentifier = sHosterIdentifier
+        self.__sHosterIdentifier = sHosterIdentifier.lower()
         self.__sDisplayName = 'Premium mode'
         self.isLogin = False
 
     def isPremiumModeAvailable(self):
-        return False
         bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
         if (bIsPremium == 'true'):
-            cConfig().log("usa premiumaccount for hoster " +  str(self.__sHosterIdentifier))
+            cConfig().log("Utilise compte premium pour hoster " +  str(self.__sHosterIdentifier))
             return True
 
-        cConfig().log("us freeaccount for hoster: " + str(self.__sHosterIdentifier))
+        cConfig().log("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
         return False
 
     def getUsername(self):
@@ -73,8 +72,8 @@ class cPremiumHandler:
         if 'uptobox' in self.__sHosterIdentifier:
             url = 'https://login.uptobox.com/logarithme'
             post_data['op'] = 'login'
-            post_data['login'] = 'xxxxx'
-            post_data['password'] = 'xxxxx'
+            post_data['login'] = self.getUsername()
+            post_data['password'] = self.getPassword()
         #si aucun de trouve on retourne
         else:
             return False
