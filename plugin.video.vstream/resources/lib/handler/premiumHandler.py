@@ -69,15 +69,29 @@ class cPremiumHandler:
 
         post_data = {}
         
+        print 'ok'
+        
         if 'uptobox' in self.__sHosterIdentifier:
             url = 'https://login.uptobox.com/logarithme'
             post_data['op'] = 'login'
             post_data['login'] = self.getUsername()
             post_data['password'] = self.getPassword()
+            
+        elif 'onefichier' in self.__sHosterIdentifier:
+            url = 'https://1fichier.com/login.pl'
+            post_data['mail'] = self.getUsername()
+            post_data['pass'] = self.getPassword()
+            post_data['lt'] = 'on'
+            post_data['purge'] = 'on'
+            post_data['valider'] = 'Send'
+            
         #si aucun de trouve on retourne
         else:
             return False
-            
+        
+        #print url
+        #print post_data
+        
         req = urllib2.Request(url, urllib.urlencode(post_data), headers)
         
         try:
@@ -103,10 +117,23 @@ class cPremiumHandler:
         head = response.headers
         response.close()
         
-        if 'OK' in sHtmlContent:
-            self.isLogin = True
+        #fh = open('c:\\prem.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        if 'uptobox' in self.__sHosterIdentifier:
+            if 'OK' in sHtmlContent:
+                self.isLogin = True
+            else:
+                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                return False
+        elif 'onefichier' in self.__sHosterIdentifier:
+            if 'You are logged in. This page will redirect you.' in sHtmlContent:
+                self.isLogin = True
+            else:
+                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                return False
         else:
-            cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
             return False
         
         #get cookie
