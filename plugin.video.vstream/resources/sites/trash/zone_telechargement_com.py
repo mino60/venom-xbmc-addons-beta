@@ -187,8 +187,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl) 
     sHtmlContent = oRequestHandler.request() 
     #sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','')
-    
-    sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="(.+?)" ><img class=.+?src="([^<]+)" width="[0-9]{3}" height="[0-9]{3}" border="0" .+?<div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href=".+?" >(.+?)<'
+    if 'series' in sUrl or 'documentaires' in sUrl or 'emissions' in sUrl :
+        sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="(.+?)" ><img class=.+?src="([^<]+)" width="[0-9]{3}" height="[0-9]{3}" border="0" .+?<div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href=".+?" >(.+?)<'
+    else:
+        sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+?)"[^>]+?><img class="[^"]+?" data-newsid="[^"]+?" src="([^<]+)" width="[0-9]{3}" height="[0-9]{3}" border="0"[^"]+?"Note spectateurs" style="[^"]+?"><img src="[^"]+?" border="0">[^<]+?</div><div style=""><div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href="[^"]+?"[^>]+?>([^<]+?) <span class="detail_release size_11">'
     
 	#pour faire simple recherche ce bout de code dans le code source de l'url
     #- ([^<]+) je veut cette partie de code mais y a une suite
@@ -198,7 +200,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult 
+    print aResult 
     
     if (aResult[0] == True):
         total = len(aResult[1])        
@@ -409,7 +411,9 @@ def showHosters():# recherche et affiche les hotes
     
     #Fonction pour recuperer uniquement les liens
     sHtmlContent = Cutlink(sHtmlContent)
-   
+    if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
+	    sHtmlContent = CutNonPremiumlinks(sHtmlContent)
+    
     oParser = cParser()
     
     sPattern = '<span style="color:#.{6}">([^>]+?)<\/span>(?:.(?!color))+?<a href="([^<>"]+?)" target="_blank">Télécharger<\/a>|>\[(Liens Premium) \]<'
@@ -527,11 +531,30 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
     
 def Cutlink(sHtmlContent):
+    print "ZT:Cutlink"
     oParser = cParser()
     sPattern = '<img src="http:\/\/www\.zone-telechargement\.com\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
     if (aResult[0]):
         return aResult[1][0]
     
     return ''
+    
+def CutNonPremiumlinks(sHtmlContent):
+    print "ZT:CutNonPremiumlinks"
+    oParser = cParser()
+    sPattern = 'Lien Premium (.+?)Publié le '
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    if (aResult[0]):
+        return aResult[1][0]
+    else:
+        sPattern = 'Liens PREMIUM (.+?)Publié le '
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        print aResult
+        if (aResult[0]):
+            return aResult[1][0]
+    
+        return ''
     
