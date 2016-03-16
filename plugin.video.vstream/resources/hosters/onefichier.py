@@ -3,11 +3,12 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.gui.gui import cGui
+from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib,urllib2
 import xbmc
 
-
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
 
@@ -64,17 +65,56 @@ class cHoster(iHoster):
         return
         
     def getMediaLink(self):
+        
+        self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
+        print self.oPremiumHandler.isPremiumModeAvailable()
+        
         import sys
-        if 'site=cDownload&function' not in sys.argv[2]:
+        if ('site=cDownload&function' not in sys.argv[2]) and not (self.oPremiumHandler.isPremiumModeAvailable()):
             oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
             return False,False
+
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        
+        if (self.oPremiumHandler.isPremiumModeAvailable()):
+            return self.__getMediaLinkByPremiumUser()
+
         return self.__getMediaLinkForGuest()
 
+        
+    def __getMediaLinkByPremiumUser(self):
+        
+        if not self.oPremiumHandler.Authentificate():
+            return False, False
+
+        url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+        
+        Mode = ''
+        #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
+        Mode = {'dl_no_ssl' : 'on' }
+        postdata = urllib.urlencode( Mode )
+        
+        #req = urllib2.Request(url,postdata,headers)
+        
+        sHtmlContent = self.oPremiumHandler.GetHtml(url,postdata)   
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        api_call = self.GetMedialinkDL(sHtmlContent)
+        
+        #print api_call
+        
+        if (api_call):
+            return True, api_call
+            
+        return False, False
+        
     def __getMediaLinkForGuest(self):
 
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
         
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
         headers = {'User-Agent': UA ,
                    'Host' : '1fichier.com',
                    'Referer' : self.__sUrl ,
@@ -99,9 +139,14 @@ class cHoster(iHoster):
         sHtmlContent = response.read()
         response.close()        
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        api_call = GetMedialinkDL(sHtmlContent)
+        
+        if (api_call):
+            return True, api_call
+            
+        return False, False
+        
+    def GetMedialinkDL(self,sHtmlContent):
         
         oParser = cParser()
         
@@ -109,19 +154,18 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             cGui().showInfo('Erreur - Limitation', aResult[1][0] , 5)
-            return False, False
+            return False
         
         sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: 10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        #print aResult
+        
         if (aResult[0] == True):
             #xbmc.sleep(1*1000)
             print aResult[1][0]
-            
             api_call = aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
+            return api_call
         
-        #print api_call
+        return False
         
-        if (api_call):
-            return True, api_call
-            
-        return False, False
