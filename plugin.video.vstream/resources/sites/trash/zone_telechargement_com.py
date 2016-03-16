@@ -271,7 +271,7 @@ def showLinks():
 
         dialog = cConfig().createDialog(SITE_NAME)
         
-        sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aResult[1][0] +'[/COLOR]' + ' Debug 1'
+        sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aResult[1][0] +'[/COLOR]'
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -292,7 +292,7 @@ def showLinks():
                 break
             
             
-            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]' + 'Debug 2'
+            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -320,6 +320,9 @@ def showSeriesLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sMovieTitle = aResult[1][0]
+    
+    #Utile ou pas ?
+    sMovieTitle = sMovieTitle.replace('[Complete]','')
 	
     
 	#on recherche d'abord la qualité courante
@@ -337,12 +340,12 @@ def showSeriesLinks():
 	
     oGui.addText('','[COLOR olive]'+'Qualités disponibles pour cette saison :'+'[/COLOR]')
 	
-    sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aResult[1][0]+'[/COLOR]'
+    sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aResult[1][0] + '[/COLOR]'
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('sUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-    oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+    oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 	
 
     sPattern1 = '<a title="Téléchargez.+?en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
@@ -358,12 +361,12 @@ def showSeriesLinks():
                 break
             
             
-            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         oGui.addText('','[COLOR olive]'+'Saisons aussi disponibles pour cette série :'+'[/COLOR]')
     
@@ -467,7 +470,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     
     sPattern = '<a href="([^"]+?)" target="_blank">([^<]+)<\/a>|<span style="color:#.{6}">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+    #print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -486,12 +489,18 @@ def showSeriesHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'showSeriesHosters', '[COLOR red]'+str(aEntry[2])+'[/COLOR]', '', '', '', oOutputParameterHandler)
             else:
-                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sName = aEntry[1]
+                sName = sName.replace('Télécharger','')
+                sName = sName.replace('pisodes','pisode')
+                
+                sTitle = sMovieTitle + ' ' + sName
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
    
             cConfig().finishDialog(dialog)
 
@@ -508,7 +517,7 @@ def Display_protected_link():
     oParser = cParser()
     
     sHtmlContent = DecryptDlProtect(sUrl)
-    print sHtmlContent
+    #print sHtmlContent
     
     if sHtmlContent:
 
@@ -517,15 +526,24 @@ def Display_protected_link():
         print aResult_dlprotect
         
         if (aResult_dlprotect[0]):
+            
+            episode = 1
+            
             for aEntry in aResult_dlprotect[1]:
                 sHosterUrl = aEntry
-                print sHosterUrl
+                #print sHosterUrl
+                
+                sTitle = sMovieTitle
+                if len(aResult_dlprotect[1]) > 1:
+                    sTitle = sMovieTitle + ' episode ' + str(episode)
+                
+                episode+=1
                 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    sDisplayTitle = cUtil().DecoTitle(sTitle)
                     oHoster.setDisplayName(sDisplayTitle)
-                    oHoster.setFileName(sMovieTitle)
+                    oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
                         
     oGui.setEndOfDirectory()
